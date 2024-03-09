@@ -1,5 +1,6 @@
 # file used for developing
-from spoldzielnie import init_app, db
+from spoldzielnie import init_app
+from spoldzielnie.models import db
 import os
 import sys
 from loguru import logger
