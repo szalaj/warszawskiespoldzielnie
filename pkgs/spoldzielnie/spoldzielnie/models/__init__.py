@@ -26,5 +26,5 @@ class Spoldzielnia(db.Model):
         return f"{self.nazwa} - {self.krs} - {self.kod_pocztowy}"
     
     def as_dict(self):
-        return {'nazwa': self.nazwa, 'x': self.krs}
+        return {'nazwa': self.nazwa, 'szerokosc_geo': self.szerokosc_geo, 'dlugosc_geo': self.dlugosc_geo, 'krs': self.krs, 'nip': self.nip, 'regon': self.regon, 'adres': self.adres, 'kod_pocztowy': self.kod_pocztowy, 'miejscowosc': self.miejscowosc, 'forma_prawna': self.forma_prawna, 'data_rejestracji': self.data_rejestracji, 'status': self.status}
     
