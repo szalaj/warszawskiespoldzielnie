@@ -8,22 +8,26 @@ from os.path import join, dirname, realpath
 STATIC_FOLDER = join(dirname(realpath(__file__)), '../static')
 common = Blueprint('common', __name__)
 
+@common.route('/favicon')
+def favicon():
+    return url_for('static', filename='favicon.ico')
+
 
 @common.route('/', methods=['GET', 'POST'])
 def main():
 
-    kr = Spoldzielnia.query.all()
+    # kr = Spoldzielnia.query.all()
 
-    S = [i.as_dict() for i in kr]
-    print(S)
+    # S = [i.as_dict() for i in kr]
+    # print(S)
 
-    UPLOADS_PATH = join(STATIC_FOLDER, 'spoldzielnie.csv')
+    # UPLOADS_PATH = join(STATIC_FOLDER, 'spoldzielnie.csv')
 
-    # write S as csv
-    with open(UPLOADS_PATH ,'w') as f:
-        writer = csv.DictWriter(f, fieldnames=S[0].keys())
-        writer.writeheader()
-        writer.writerows(S)
+    # # write S as csv
+    # with open(UPLOADS_PATH ,'w') as f:
+    #     writer = csv.DictWriter(f, fieldnames=S[0].keys())
+    #     writer.writeheader()
+    #     writer.writerows(S)
 
 
 
