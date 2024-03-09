@@ -9,15 +9,12 @@ from loguru import logger
 
 print(f"run file _{__name__}")
 
-# get current path
+
 current_path = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.abspath(os.path.join(current_path, 'db'))
 os.environ['APP_FOLDER'] = os.path.abspath(os.path.join(current_path, 'pkgs/spoldzielnie'))
-print(os.environ['APP_FOLDER'])
 os.environ['APPDB_PATH'] = db_path 
-print(db_path)
 os.environ['LOG_PATH'] = current_path   
-#os.environ['APPDB_PATH'] = "/home/szalaj/procenty/services/db/" 
 
 log_level = "DEBUG"
 log_format = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS zz}</green> | <level>{level: <8}</level> | <yellow>Line {line: >4} ({file}):</yellow> <b>{message}</b>"
