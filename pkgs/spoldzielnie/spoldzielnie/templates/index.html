@@ -12,17 +12,42 @@
 <title>Warszawskie spółdzielnie mieszkaniowe</title>
 <style>
     .continent {
-    fill: #fa8b8b;
-    stroke: #e0cabc;
-    stroke-width: 1px;
+    fill: url(#svgGradient);
+    stroke: #ff9a02;
+    stroke-width: 3px;
 }
 
+
+    .wisla {
+    fill: none;
+    stroke: #a3b9ff;
+    stroke-width: 10px;
+}
 
 
 .labels {
     font-family: sans-serif;
     font-size: 11px;
     fill: #3c373d;
+}
+
+p.title {
+/* text-shadow:
+    2px 2px 2px #d6693d;
+    2px 2px 1px red; */
+    background-color: #FFFffF;
+
+
+
+}
+
+p.subtitle {
+  color: #ffffff;
+/* text-shadow:
+    2px 1px 1px rgb(103, 66, 104),
+    2px 2px 1px red; */
+    background-color: #e07f7f;
+width:160px;
 }
 
 </style>
@@ -32,11 +57,11 @@
     <section class="hero">
         <div class="container">
         <div class="hero-body">
-          <p class="title">
-            Warszawskie spółdzielnie mieszkaniowe
+          <p class="title is-size-1">
+              Warszawskie spółdzielnie mieszkaniowe 
           </p>
           <p class="subtitle">
-            -wersja robocza-
+            &nbsp; status gruntów
           </p>
         </div>
     </div>
@@ -48,19 +73,21 @@
 </div>
 <div class="container">
     <br><br>
+    <div class="table-container">
     <table class="table">
         <thead>
           <tr>
             <th>Lp.</th>
             <th>Nazwa</th>
-            <th>KRS</th>
-            <th>Adres</th>
             <th>Status</th>
+            <th>Adres</th>
+            <th>KRS</th>
   
           </tr>
         </thead>
   
       </table>
+    </div>
 </div>
 <div class="container">
     <br><br>
@@ -68,10 +95,10 @@
 <footer class="footer">
     <div class="content has-text-centered">
       <p>
-        <strong>Warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-03-08]
+        <strong>Warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-03-10]
 </p>
       <p>
-        Cześć przedstawionych danych pochodzi z zasobów publicznych. Niektóre dane mogą nie być prawdziwe. Twórcy nie ponoszą odpowiedzialności za ich poprawność.
+        Wersja robocza. Twórcy nie ponoszą odpowiedzialności za ich poprawność.
       
       </p>
     </div>
@@ -82,40 +109,56 @@
     var w = 1400;
     var h = 700;
     var svg = d3.select("div#chart").append("svg").attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 " + w + " " + h).style("background","#ffffaa")
+    .attr("viewBox", "0 0 " + w + " " + h).style("background","#fffaaf")
     .classed("svg-content", true);
 
     var projection = d3.geoMercator().translate([w/2-100,h/2+570]).scale(86000).center([21,52]);
     var path = d3.geoPath().projection(projection);
 
     var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}")
-    var spoldzielnie = d3.json("{{ url_for('static', filename='dzielnice/spol.geojson') }}")
+    var wisla = d3.json("{{ url_for('static', filename='dzielnice/wisla.geojson') }}")
     var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
 
-    Promise.all([warszawa, spoldzielnie, spol]).then(function(values){   
+    Promise.all([warszawa, wisla, spol]).then(function(values){   
         console.log(values);
 
         values[0].features.forEach(function(feature) {
            feature.geometry.coordinates[0].reverse();
         });
 
-        svg.selectAll("path")
+        svg.selectAll("path.continent")
             .data(values[0].features)
             .enter()
             .append("path")
             .attr("class","continent")
-            .attr("d", path)
+            .attr("d", path);
+    
+            svg.selectAll("path.wisla")
+            .data(values[1].features)
+            .enter()
+            .append("path")
+            .attr("class","wisla")
+            .attr("d", path);
 
-    //   svg.selectAll("circle")
-    //     .data(values[1].features)
-    //     .enter()
-    //     .append("circle")
-    //     .attr("class","circles")
-    //     .attr("cx", function(d) {
-    //         console.log(d.geometry.coordinates[0]);
-    //         return projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])[0];})
-    //     .attr("cy", function(d) {return projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])[1];})
-    //     .attr("r", "6px")
+            var defs = svg.append('defs');
+            var gradient = defs.append('linearGradient')
+            .attr('id', 'svgGradient')
+            .attr('x1', '0%')
+            .attr('x2', '100%')
+            .attr('y1', '0%')
+            .attr('y2', '100%');
+
+            gradient.append('stop')
+            .attr('class', 'start')
+            .attr('offset', '0%')
+            .attr('stop-color', '#fa8b8b')
+            .attr('stop-opacity', 0.7);
+
+            gradient.append('stop')
+            .attr('class', 'end')
+            .attr('offset', '100%')
+            .attr('stop-color', '#fa8b8b')
+            .attr('stop-opacity', 1);
 
         svg.selectAll("circle")
         .data(values[2])
@@ -126,7 +169,7 @@
             console.log(d);
             return projection([d.dlugosc_geo, d.szerokosc_geo])[0];})
         .attr("cy", function(d) {return projection([d.dlugosc_geo, d.szerokosc_geo])[1];})
-        .attr("r", "6px")
+        .attr("r", "12px")
         .attr("fill", function(d) {
             if (d.status == "uregulowane") {
                 return "green"
@@ -153,13 +196,6 @@
             wiersz.append("td")
             .text(function (d) { return d.nazwa })
 
-
-            wiersz.append("td")
-            .text(function (d) { return d.krs })
-
-            wiersz.append("td")
-            .text(function (d) { return d.adres+", "+d.kod_pocztowy+", "+d.miejscowosc})
-
             wiersz.append("td")
             .style("background-color", function(d) {
                 if (d.status == "uregulowane") {
@@ -172,6 +208,14 @@
                 }
             })
             .text(function (d) { return d.status })
+
+
+
+            wiersz.append("td")
+            .text(function (d) { return d.adres+", "+d.kod_pocztowy+", "+d.miejscowosc})
+
+            wiersz.append("td")
+            .text(function (d) { return d.krs })
 
 
 

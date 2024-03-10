@@ -2,9 +2,9 @@
 __version__ = "0.1"
 
 from flask import Flask, redirect, url_for
-from flask_login import LoginManager
+
 from flask_sqlalchemy import SQLAlchemy
-from flask_apscheduler import APScheduler
+
 from flask_migrate import Migrate
 
 import requests
