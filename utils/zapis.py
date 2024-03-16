@@ -7,6 +7,8 @@ import csv
 import datetime
 import os
 import random
+import pandas as pd
+import numpy as np
 
 
 
@@ -57,7 +59,51 @@ def load_bank():
         print(db)
         db.session.add(d)
         db.session.commit()
+\
+def load_spoldzielnie():
+    with app.app_context():
+
+        df = pd.read_csv('../pkgs/spoldzielnie/spoldzielnie/static/warszawskie_spoldzielnie.csv', header=0, sep=',', encoding='utf-8')
+        
+        print(df.head())
+
+
+        #print(inflacja_mm)
+        for index, row in df.iterrows():
+            print('row-------')
+            print(row['data_rejestracji'])
+            if pd.isna(row['data_rejestracji']):
+                #print('nan')
+                print('aha')
+                pass
+            else:
+                print('not nan' )
+               
+                if row['data_rejestracji']=='':
+                    print('aaa')
+
+            # check if data rejestracji is empty
+            
+            
+            # data = f"{row['Rok']}-{row['Miesiac']:02d}"
+            # wartosc = float(row['Wartosc'].replace(',','.'))
+            d = Spoldzielnia(
+                nazwa=row['nazwa'],
+                krs=row['krs'],
+                nip=row['nip'],
+                regon=row['regon'],
+                adres=row['adres'],
+                kod_pocztowy=row['kod_pocztowy'],
+                miejscowosc=row['miejscowosc'],
+                forma_prawna=row['forma_prawna'],
+                data_rejestracji=None if pd.isna(row['data_rejestracji']) else datetime.datetime.strptime(row['data_rejestracji'], '%Y-%m-%d'),
+                status=row['status'],
+                szerokosc_geo=row['szerokosc_geo'],
+                dlugosc_geo=row['dlugosc_geo']
+            )
+            db.session.add(d)
+            db.session.commit()
 
 if __name__ == "__main__":
     print('ehlo')
-    load_bank()
+    load_spoldzielnie()

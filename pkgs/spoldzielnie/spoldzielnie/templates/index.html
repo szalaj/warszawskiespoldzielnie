@@ -77,11 +77,12 @@ width:160px;
     <table class="table">
         <thead>
           <tr>
-            <th>Lp.</th>
             <th>Nazwa</th>
-            <th>Status</th>
-            <th>Adres</th>
             <th>KRS</th>
+
+            <!-- <th>Sprawy</th> -->
+            <th>Adres</th>
+
             
           </tr>
         </thead>
@@ -122,6 +123,9 @@ width:160px;
 
     Promise.all([warszawa, wisla, spol, gw_svg]).then(function(values){   
         console.log(values);
+
+        // logo
+        d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
 
         values[0].features.forEach(function(feature) {
            feature.geometry.coordinates[0].reverse();
@@ -187,39 +191,28 @@ width:160px;
 
         let tabela = d3.select("table")
 
-            let wiersz = tabela.append("tbody")
-            .selectAll("tr").data(values[2])
-            .enter().append("tr")
-
-            wiersz.append("td")
-            .text(function (d,i) { return i+1; })
-
-            wiersz.append("td")
-            .text(function (d) { return d.nazwa })
-
-            wiersz.append("td")
-            .style("background-color", function(d) {
-                if (d.status == "uregulowane") {
-                    return "lightgreen"
-                }
-                else if (d.status == "niewiadomo") {
-                    return "yellow"
-                } else {
-                    return "#ec6b6b"
-                }
-            })
-            .text(function (d) { return d.status })
+        let wiersz = tabela.append("tbody")
+        .selectAll("tr").data(values[2])
+        .enter().append("tr")
 
 
 
-            wiersz.append("td")
-            .text(function (d) { return d.adres+", "+d.kod_pocztowy+", "+d.miejscowosc})
-
-            wiersz.append("td")
-            .text(function (d) { return d.krs })
+        wiersz.append("td")
+        .text(function (d) { return d.nazwa })
 
 
-            d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
+
+        wiersz.append("td")
+        .text(function (d) { return d.krs })
+
+
+        wiersz.append("td")
+        .text(function (d) { return d.adres+", "+d.kod_pocztowy+", "+d.miejscowosc})
+
+
+
+
+
 
     });
     // d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}").then(function(data) {

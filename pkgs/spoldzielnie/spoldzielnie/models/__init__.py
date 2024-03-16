@@ -5,10 +5,10 @@ from sqlalchemy.sql import func
 class Spoldzielnia(db.Model):
     __tablename__ = 'spoldzielnia'
 
-    id = db.Column(db.Integer, primary_key=True)
 
+    krs  = db.Column(db.String, primary_key=True) 
     nazwa = db.Column(db.String) 
-    krs  = db.Column(db.String) 
+
     nip = db.Column(db.String) 
     regon = db.Column(db.String) 
     adres = db.Column(db.String) 
