@@ -63,7 +63,7 @@ def load_bank():
 def load_spoldzielnie():
     with app.app_context():
 
-        df = pd.read_csv('../pkgs/spoldzielnie/spoldzielnie/static/warszawskie_spoldzielnie.csv', header=0, sep=',', encoding='utf-8')
+        df = pd.read_csv('../pkgs/spoldzielnie/spoldzielnie/static/warszawskie_spoldzielnie.csv',dtype=str, header=0, sep=',', encoding='utf-8')
         
         print(df.head())
 

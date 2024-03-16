@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request, send_file, sessions
+from flask import Blueprint, render_template, flash, redirect, url_for, request, send_file, sessions, jsonify
 import geojson
 from ..models import Spoldzielnia
 import csv
@@ -33,3 +33,8 @@ def main():
 
 
     return render_template('index.html')
+
+@common.route('/spoldzielnie_dane', methods=['GET'])
+def spoldzielnie_dane():
+    S = Spoldzielnia.query.order_by(Spoldzielnia.nazwa).all()
+    return jsonify([s.as_dict() for s in S])

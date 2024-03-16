@@ -118,8 +118,16 @@ width:160px;
 
     var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}")
     var wisla = d3.json("{{ url_for('static', filename='dzielnice/wisla.geojson') }}")
-    var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
+
+    // var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
+
+
+    var spol = d3.json({{ url_for("common.spoldzielnie_dane") | tojson }})
     var gw_svg = d3.svg("{{ url_for('static', filename='pics/gwiazdka.svg') }}")
+
+
+
+
 
     Promise.all([warszawa, wisla, spol, gw_svg]).then(function(values){   
         console.log(values);
