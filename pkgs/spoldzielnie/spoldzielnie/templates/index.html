@@ -61,14 +61,14 @@ width:160px;
               Warszawskie spółdzielnie mieszkaniowe 
           </p>
           <p class="subtitle">
-            &nbsp; status gruntów
+            <div id="svgEmbed"></div>
           </p>
         </div>
     </div>
       </section>
 <div class="container">
    
-
+    
     <div id="chart"></div>
 </div>
 <div class="container">
@@ -82,7 +82,7 @@ width:160px;
             <th>Status</th>
             <th>Adres</th>
             <th>KRS</th>
-  
+            
           </tr>
         </thead>
   
@@ -118,8 +118,9 @@ width:160px;
     var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}")
     var wisla = d3.json("{{ url_for('static', filename='dzielnice/wisla.geojson') }}")
     var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
+    var gw_svg = d3.svg("{{ url_for('static', filename='pics/gwiazdka.svg') }}")
 
-    Promise.all([warszawa, wisla, spol]).then(function(values){   
+    Promise.all([warszawa, wisla, spol, gw_svg]).then(function(values){   
         console.log(values);
 
         values[0].features.forEach(function(feature) {
@@ -218,7 +219,7 @@ width:160px;
             .text(function (d) { return d.krs })
 
 
-
+            d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
 
     });
     // d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}").then(function(data) {
