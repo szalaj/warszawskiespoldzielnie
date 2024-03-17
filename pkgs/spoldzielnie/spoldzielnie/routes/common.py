@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request, send_file, sessions
+from flask import Blueprint, render_template, flash, redirect, url_for, request, send_file, sessions, jsonify
 import geojson
-from ..models import Spoldzielnia
+from ..models import Spoldzielnia, Sprawa
 import csv
 import pandas as pd
 from os.path import join, dirname, realpath
@@ -33,3 +33,13 @@ def main():
 
 
     return render_template('index.html')
+
+@common.route('/spoldzielnie_dane', methods=['GET'])
+def spoldzielnie_dane():
+    S = Spoldzielnia.query.order_by(Spoldzielnia.nazwa).all()
+    return jsonify([s.as_dict() for s in S])
+
+@common.route('/sprawy_dane', methods=['GET'])
+def sprawy_dane():
+    S = Sprawa.query.order_by(Sprawa.spoldzielnia).all()
+    return jsonify([s.as_dict() for s in S])
