@@ -47,7 +47,7 @@ p.subtitle {
     2px 1px 1px rgb(103, 66, 104),
     2px 2px 1px red; */
     background-color: #e07f7f;
-width:160px;
+width:246px;
 }
 
 
@@ -64,9 +64,9 @@ tr.spoldzielnia{
         <div class="container">
         <div class="hero-body">
           <p class="title is-size-1">
-              WARSZAWSKIE SPÓŁDZIELNIE MIESZKANIOWE
+              warszawskie spółdzielnie mieszkaniowe
           </p>
-          <p class="subtitle">
+          <p class="subtitle">&nbsp; konflikty, sprawy, opinie&nbsp;
             <div id="svgEmbed"></div>
           </p>
         </div>
@@ -242,10 +242,10 @@ tr.spoldzielnia{
         .attr("transform", function(d) {
             return "translate("+projection([d.dlugosc_geo, d.szerokosc_geo])+")"
         })
-        .append("path").attr("d", d3.symbol(d3.symbolTriangle, 100))
-        .attr("fill", "#613dff")
+        .append("path").attr("d", d3.symbol(d3.symbolCross, 100))
+        .attr("fill", "red")
         .attr("stroke", "#3f00d1")
-        .attr("stroke-width", 3)
+        .attr("stroke-width", 1)
 
 
 
