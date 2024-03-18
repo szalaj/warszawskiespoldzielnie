@@ -51,6 +51,7 @@ width:246px;
 }
 
 
+
 tr.spoldzielnia{
     color: black;
     background-color: rgb(147, 230, 255);
@@ -213,12 +214,12 @@ tr.spoldzielnia{
 
 
         wiersz.append("td")
-        .text(function (d) { return d.adres+", "+d.kod_pocztowy+", "+d.miejscowosc})
+        .text(function (d) { return d.adres.toUpperCase()+", "+d.kod_pocztowy+", "+d.miejscowosc.toUpperCase()})
 
 
         // d3.selectAll("tbody").append("tr","tr")
 
- 
+        const formatTime = d3.utcFormat("%Y-%m-%d");
 
         values[4].forEach(function(sprawa) {
             console.log(sprawa.spoldzielnia);
@@ -228,7 +229,10 @@ tr.spoldzielnia{
             let t = document.createElement('tr');
             x.parentNode.insertBefore(t, x.nextSibling);  
 
-            t.innerHTML = "<td>&#9650; "+sprawa.kategoria+"</td><td>"+sprawa.opis+"</td><td><a>"+sprawa.odnosniki+"</a></td>"
+            // get string from date object sprawa.data_rozpoczenia
+            let data_rozpoczenia = formatTime(new Date(sprawa.data_rozpoczenia));
+
+            t.innerHTML = "<td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td><td><a href='"+sprawa.odnosniki+"''>"+sprawa.odnosniki+"</a></td>"
 
   
     
@@ -242,7 +246,7 @@ tr.spoldzielnia{
         .attr("transform", function(d) {
             return "translate("+projection([d.dlugosc_geo, d.szerokosc_geo])+")"
         })
-        .append("path").attr("d", d3.symbol(d3.symbolCross, 100))
+        .append("path").attr("d", d3.symbol(d3.symbolStar, 100))
         .attr("fill", "red")
         .attr("stroke", "#3f00d1")
         .attr("stroke-width", 1)
