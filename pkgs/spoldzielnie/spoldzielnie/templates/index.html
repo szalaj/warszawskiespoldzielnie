@@ -81,6 +81,7 @@ tr.spoldzielnia{
 <div class="container">
     <br><br>
     <div class="table-container">
+      <p><i>uwaga: poniższa lista jest niezupełna oraz może być nieaktualna</i></p>
     <table class="table">
         <thead>
           <tr>
@@ -103,7 +104,7 @@ tr.spoldzielnia{
 <footer class="footer">
     <div class="content has-text-centered">
       <p>
-        <strong>warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-03-18]
+        <strong>warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-03-22]
 </p>
       <p>
         Wersja robocza. Twórcy nie ponoszą odpowiedzialności za poprawność danych.
@@ -181,20 +182,50 @@ tr.spoldzielnia{
             .attr('stop-color', '#fa8b8b')
             .attr('stop-opacity', 1);
 
-        svg.selectAll("circles.spoldzielnia")
+        let g_spol = svg.selectAll("g.spoldzielnia")
         .data(values[2])
         .enter()
+        .append("g")
+        .attr("class","spoldzielnia")
+        .attr("transform", function(d) {
+            return "translate("+projection([d.dlugosc_geo, d.szerokosc_geo])+")"
+        })
+
+
+        g_spol
         .append("circle")
         .attr("class","spoldzielnia")
-        .attr("cx", function(d) {
-            console.log(d);
-            return projection([d.dlugosc_geo, d.szerokosc_geo])[0];})
-        .attr("cy", function(d) {return projection([d.dlugosc_geo, d.szerokosc_geo])[1];})
+        .attr("cx", 0)
+        .attr("cy", 0)
         .attr("r", "8px")
-        .attr("fill", 'rgb(147, 230, 255)')
+        .attr("fill", function(d) {
+            if (d.status == "uregulowane") {
+                return 'rgb(147, 230, 255)'
+            } else if (d.status == "nieuregulowane") {
+                return 'rgb(107, 190, 255)'
+            } else {
+                return 'rgb(147, 230, 255)'
+            }
+        })
         .attr("stroke", "black")
         .attr("stroke-width", 1)
 
+        g_spol.filter(function(d){ return d.status == "nieuregulowane"; })
+        .append("text")
+        .attr("x", -6)
+        .attr("y", 5.5)
+        .text("D")
+
+        // .attr("stroke", function(d) {
+        //     if (d.status == "uregulowane") {
+        //         return "black"
+        //     } else if (d.status == "nieuregulowane") {
+        //         return "red"
+        //     } else {
+        //         return "orange"
+        //     }
+        // })
+        // .attr("stroke-width", 4)
 
         let tabela = d3.select("table")
 
@@ -232,8 +263,20 @@ tr.spoldzielnia{
             // get string from date object sprawa.data_rozpoczenia
             let data_rozpoczenia = formatTime(new Date(sprawa.data_rozpoczenia));
 
-            t.innerHTML = "<td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td><td><a href='"+sprawa.odnosniki+"''>"+sprawa.odnosniki+"</a></td>"
+            let ih = "<td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td>"
 
+            
+
+              t.ih += "<td>"
+            
+            let odnosniki = sprawa.odnosniki.split("|");
+            odnosniki.forEach(function(odnosnik) {
+                ih += "<a href='"+odnosnik+"'>"+odnosnik+"</a><br><br>"
+              
+            });
+            ih += "</td>"
+
+            t.innerHTML = ih;
   
     
         })
@@ -246,9 +289,9 @@ tr.spoldzielnia{
         .attr("transform", function(d) {
             return "translate("+projection([d.dlugosc_geo, d.szerokosc_geo])+")"
         })
-        .append("path").attr("d", d3.symbol(d3.symbolStar, 100))
+        .append("path").attr("d", d3.symbol(d3.symbolStar, 140))
         .attr("fill", "red")
-        .attr("stroke", "#3f00d1")
+        .attr("stroke", "black")
         .attr("stroke-width", 1)
 
 
