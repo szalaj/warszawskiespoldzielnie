@@ -14,11 +14,17 @@
     .continent {
     fill: url(#svgGradient);
     stroke: #ff9a02;
-    stroke-width: 3px;
+    stroke-width: 7px;
 }
 
+.dzielnice {
+    /* fill: rgb(230, 199, 96); */
+    fill: url(#svgGradient);
+    stroke: #5f2848;
+    stroke-width: 1px;
+}
 
-    .wisla {
+.wisla {
     fill: none;
     stroke: #a3b9ff;
     stroke-width: 10px;
@@ -125,6 +131,7 @@ tr.spoldzielnia{
     var path = d3.geoPath().projection(projection);
 
     var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}")
+    var warszawa_dzielnice = d3.json("{{ url_for('static', filename='dzielnice/warszawa-dzielnice.geojson') }}")
     var wisla = d3.json("{{ url_for('static', filename='dzielnice/wisla.geojson') }}")
 
     // var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
@@ -138,8 +145,8 @@ tr.spoldzielnia{
 
 
 
-    Promise.all([warszawa, wisla, spol, gw_svg, sprawy]).then(function(values){   
-        console.log(values[4]);
+    Promise.all([warszawa, wisla, spol, gw_svg, sprawy, warszawa_dzielnice]).then(function(values){   
+  
 
         // logo
         d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
@@ -155,12 +162,7 @@ tr.spoldzielnia{
             .attr("class","continent")
             .attr("d", path);
     
-            svg.selectAll("path.wisla")
-            .data(values[1].features)
-            .enter()
-            .append("path")
-            .attr("class","wisla")
-            .attr("d", path);
+
 
             var defs = svg.append('defs');
             var gradient = defs.append('linearGradient')
@@ -179,8 +181,32 @@ tr.spoldzielnia{
             gradient.append('stop')
             .attr('class', 'end')
             .attr('offset', '100%')
-            .attr('stop-color', '#fa8b8b')
+            .attr('stop-color', 'rgb(230, 199, 96)')
             .attr('stop-opacity', 1);
+
+        values[5].features.forEach(function(feature) {
+            feature.geometry.coordinates.forEach(function(coords) {
+                coords.forEach(function(coord) {
+                    coord.reverse();
+                });
+            });
+
+        });
+  
+            svg.selectAll("path.dzielnice")
+            .data(values[5].features)
+            .enter()
+            .append("path")
+            .attr("class","dzielnice")
+            .attr("d", path);
+
+
+            svg.selectAll("path.wisla")
+            .data(values[1].features)
+            .enter()
+            .append("path")
+            .attr("class","wisla")
+            .attr("d", path);
 
         let g_spol = svg.selectAll("g.spoldzielnia")
         .data(values[2])
@@ -295,6 +321,63 @@ tr.spoldzielnia{
         .attr("stroke-width", 1)
 
 
+
+
+        let g_legenda = svg.append("g").attr("transform", function(d) {
+            return "translate(40, 40)"
+        })
+        
+
+
+
+
+    g_legenda.append("circle")
+        .attr("class","spoldzielnia")
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", "8px")
+        .attr("fill", 'rgb(147, 230, 255)')
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+
+        g_legenda.append("text")
+        .attr('x', 20)
+        .attr('y', 4)
+        .text("- spółdzielnia mieszkaniowa (SM)")
+
+
+
+
+        g_legenda.append("circle")
+        .attr("class","spoldzielnia")
+        .attr("cx", 0)
+        .attr("cy", 40)
+        .attr("r", "8px")
+        .attr("fill", 'rgb(147, 230, 255)')
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+
+        g_legenda
+        .append("text")
+        .attr("x", -6)
+        .attr("y", 45.5)
+        .text("D")
+
+        g_legenda.append("text")
+        .attr('x', 20)
+        .attr('y', 44)
+        .text("- SM z nieuregulowanymi gruntami")
+
+        g_legenda.append("path").attr("d", d3.symbol(d3.symbolStar, 200))
+        .attr("fill", "red")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+        .attr("transform", "translate(0, 80)")
+
+        g_legenda.append("text")
+        .attr('x', 20)
+        .attr('y', 84)
+        .text("- sprawa (artykuł prasowy)")
 
         // .attr("cx", function(d) {
         //     console.log(d);
