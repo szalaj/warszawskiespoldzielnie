@@ -11,7 +11,7 @@
 <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" >
 <title>Warszawskie spółdzielnie mieszkaniowe</title>
 <style>
-    
+
 .continent {
     fill: url(#svgGradient);
     stroke: #ff9a02;
@@ -148,7 +148,7 @@ tr.spoldzielnia{
 
     Promise.all([warszawa, wisla, spol, gw_svg, sprawy, warszawa_dzielnice]).then(function(values){   
   
-
+        console.log(values[2]);
         // logo
         d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
 
@@ -224,7 +224,7 @@ tr.spoldzielnia{
         .attr("class","spoldzielnia")
         .attr("cx", 0)
         .attr("cy", 0)
-        .attr("r", "8px")
+        .attr("r", "3px")
         .attr("fill", function(d) {
             if (d.status == "uregulowane") {
                 return 'rgb(147, 230, 255)'
