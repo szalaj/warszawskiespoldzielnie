@@ -11,7 +11,8 @@
 <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" >
 <title>Warszawskie spółdzielnie mieszkaniowe</title>
 <style>
-    .continent {
+
+.continent {
     fill: url(#svgGradient);
     stroke: #ff9a02;
     stroke-width: 7px;
@@ -63,6 +64,12 @@ tr.spoldzielnia{
     background-color: rgb(147, 230, 255);
 }
 
+
+tr.spoldzielnia_grunty{
+    color: black;
+    background-color: rgb(0, 154, 201);
+}
+
 </style>
 </head>
 
@@ -87,10 +94,12 @@ tr.spoldzielnia{
 <div class="container">
     <br><br>
     <div class="table-container">
+        <p><i>lista spółdzielnie o nieuregulowanych gruntach pochodzi z <a href="https://www.wlasnosc.waw.pl/">wlasnosc.waw.pl</a></i></p>
       <p><i>uwaga: poniższa lista jest niezupełna oraz może być nieaktualna</i></p>
     <table class="table">
         <thead>
           <tr>
+            <th>lp</th>
             <th>Nazwa</th>
             <th>KRS</th>
 
@@ -110,7 +119,7 @@ tr.spoldzielnia{
 <footer class="footer">
     <div class="content has-text-centered">
       <p>
-        <strong>warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-03-22]
+        <strong>warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-03-30]
 </p>
       <p>
         Wersja robocza. Twórcy nie ponoszą odpowiedzialności za poprawność danych.
@@ -147,7 +156,7 @@ tr.spoldzielnia{
 
     Promise.all([warszawa, wisla, spol, gw_svg, sprawy, warszawa_dzielnice]).then(function(values){   
   
-
+        console.log(values[2]);
         // logo
         d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
 
@@ -223,12 +232,12 @@ tr.spoldzielnia{
         .attr("class","spoldzielnia")
         .attr("cx", 0)
         .attr("cy", 0)
-        .attr("r", "8px")
+        .attr("r", "3px")
         .attr("fill", function(d) {
             if (d.status == "uregulowane") {
                 return 'rgb(147, 230, 255)'
             } else if (d.status == "nieuregulowane") {
-                return 'rgb(107, 190, 255)'
+                return "#3c70e8"
             } else {
                 return 'rgb(147, 230, 255)'
             }
@@ -237,10 +246,20 @@ tr.spoldzielnia{
         .attr("stroke-width", 1)
 
         g_spol.filter(function(d){ return d.status == "nieuregulowane"; })
-        .append("text")
-        .attr("x", -6)
-        .attr("y", 5.5)
-        .text("D")
+        .append("circle")
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", "6px")
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.5)
+
+        // g_spol.filter(function(d){ return d.status == "nieuregulowane"; })
+        // .append("text")
+        // .attr("x", -6)
+        // .attr("y", 5.5)
+        // .text("X")
+        // .attr("fill", "blue")
 
         // .attr("stroke", function(d) {
         //     if (d.status == "uregulowane") {
@@ -257,12 +276,21 @@ tr.spoldzielnia{
 
         let wiersz = tabela.append("tbody")
         .selectAll("tr").data(values[2])
-        .enter().append("tr").attr("id", function(d) {return d.krs}).attr('class','spoldzielnia')
-
+        .enter().append("tr").attr("id", function(d) {return d.krs})
+        .attr('class', function(d) {
+            if (d.status == "nieuregulowane") {
+                return "spoldzielnia_grunty"
+            } else {
+                return "spoldzielnia"
+            }
+        })
 
 
         wiersz.append("td")
-        .html(function (d) { return "&#9679; " + d.nazwa })
+        .html(function (d,i) { return (i+1)+"." })
+
+        wiersz.append("td")
+        .html(function (d,i) { return "&#9679; " + d.nazwa })
 
 
 
@@ -289,7 +317,7 @@ tr.spoldzielnia{
             // get string from date object sprawa.data_rozpoczenia
             let data_rozpoczenia = formatTime(new Date(sprawa.data_rozpoczenia));
 
-            let ih = "<td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td>"
+            let ih = "<td></td><td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td>"
 
             
 
@@ -353,15 +381,18 @@ tr.spoldzielnia{
         .attr("cx", 0)
         .attr("cy", 40)
         .attr("r", "8px")
-        .attr("fill", 'rgb(147, 230, 255)')
+        .attr("fill", '#3c70e8')
         .attr("stroke", "black")
         .attr("stroke-width", 1)
 
         g_legenda
-        .append("text")
-        .attr("x", -6)
-        .attr("y", 45.5)
-        .text("D")
+        .append("circle")
+        .attr("cx", 0)
+        .attr("cy", 40)
+        .attr("r", "12px")
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.5)
 
         g_legenda.append("text")
         .attr('x', 20)

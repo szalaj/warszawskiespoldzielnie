@@ -54,7 +54,7 @@ def load_sprawy():
 def load_spoldzielnie():
     with app.app_context():
 
-        df = pd.read_excel('../pkgs/spoldzielnie/spoldzielnie/dane/spoldzielnie.ods',dtype=str, header=0)
+        df = pd.read_excel('../pkgs/spoldzielnie/spoldzielnie/dane/spoldzielnie_3.ods',dtype=str, header=0)
 
 
 
@@ -72,7 +72,7 @@ def load_spoldzielnie():
                 kod_pocztowy=row['kod_pocztowy'],
                 miejscowosc=row['miejscowosc'],
                 forma_prawna=row['forma_prawna'],
-                data_rejestracji=None if pd.isna(row['data_rejestracji']) else datetime.datetime.strptime(row['data_rejestracji'], '%Y-%m-%d'),
+                data_rejestracji=None if pd.isna(row['data_rejestracji']) else datetime.datetime.strptime(row['data_rejestracji'], '%d.%m.%Y'),
                 status=row['status'],
                 szerokosc_geo=row['szerokosc_geo'],
                 dlugosc_geo=row['dlugosc_geo']
@@ -83,4 +83,4 @@ def load_spoldzielnie():
 if __name__ == "__main__":
     print('ehlo')
     load_spoldzielnie()
-    load_sprawy()
+    # load_sprawy()
