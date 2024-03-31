@@ -70,6 +70,14 @@ tr.spoldzielnia_grunty{
     background-color: rgb(0, 154, 201);
 }
 
+div.info-nadtabela {
+    background-color: #d8e6e9;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    margin: 20px;
+    border-radius: 10px;
+
+}
 </style>
 </head>
 
@@ -94,8 +102,10 @@ tr.spoldzielnia_grunty{
 <div class="container">
     <br><br>
     <div class="table-container">
-        <p><i>lista spółdzielnie o nieuregulowanych gruntach pochodzi z <a href="https://www.wlasnosc.waw.pl/">wlasnosc.waw.pl</a></i></p>
-      <p><i>uwaga: poniższa lista jest niezupełna oraz może być nieaktualna</i></p>
+        <div class="info-nadtabela">
+      <p><i>Lista spółdzielni o nieuregulowanych gruntach pochodzi ze strefa <a href="https://www.wlasnosc.waw.pl/">wlasnosc.waw.pl</a></i></p>
+      <p><i>Poniższa lista może być niezupełna lub nieaktualna.</i></p>
+    </div>
     <table class="table">
         <thead>
           <tr>
@@ -119,7 +129,7 @@ tr.spoldzielnia_grunty{
 <footer class="footer">
     <div class="content has-text-centered">
       <p>
-        <strong>warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-03-30]
+        <strong>warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-03-31]
 </p>
       <p>
         Wersja robocza. Twórcy nie ponoszą odpowiedzialności za poprawność danych.
@@ -148,7 +158,7 @@ tr.spoldzielnia_grunty{
 
     var spol = d3.json({{ url_for("common.spoldzielnie_dane") | tojson }})
     var sprawy = d3.json({{ url_for("common.sprawy_dane") | tojson }})
-    var gw_svg = d3.svg("{{ url_for('static', filename='pics/gwiazdka.svg') }}")
+    var gw_svg = d3.svg("{{ url_for('static', filename='pics/gwiazdka2.svg') }}")
 
 
 
@@ -237,7 +247,7 @@ tr.spoldzielnia_grunty{
             if (d.status == "uregulowane") {
                 return 'rgb(147, 230, 255)'
             } else if (d.status == "nieuregulowane") {
-                return "#3c70e8"
+                return '#2c89a0'
             } else {
                 return 'rgb(147, 230, 255)'
             }
@@ -343,7 +353,7 @@ tr.spoldzielnia_grunty{
         .attr("transform", function(d) {
             return "translate("+projection([d.dlugosc_geo, d.szerokosc_geo])+")"
         })
-        .append("path").attr("d", d3.symbol(d3.symbolStar, 140))
+        .append("path").attr("d", d3.symbol(d3.symbolStar, 90))
         .attr("fill", "red")
         .attr("stroke", "black")
         .attr("stroke-width", 1)
