@@ -62,3 +62,39 @@ class Sprawa(db.Model):
     
     def as_dict(self):
         return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'data_rozpoczenia': self.data_rozpoczenia, 'data_zakonczenia': self.data_zakonczenia, 'opis': self.opis, 'status': self.status, 'kategoria': self.kategoria, 'odnosniki': self.odnosniki, 'szerokosc_geo': self.szerokosc_geo, 'dlugosc_geo': self.dlugosc_geo}
+    
+    
+class Walne(db.Model):
+    __tablename__ = 'walne'
+
+
+    nr = db.Column(db.Integer, primary_key=True) 
+
+    data_dodania = db.Column(db.DateTime(timezone=True), server_default=func.now())
+
+
+    spoldzielnia = db.Column(db.String, db.ForeignKey("spoldzielnia.krs"), nullable=False)
+
+    bylo = db.Column(db.Boolean)
+    kiedy_bylo = db.Column(db.DateTime())
+
+    rok_kalendarzowy = db.Column(db.String)
+
+    bilans = db.Column(db.Float)
+    zysk_netto = db.Column(db.Float)
+
+    glosowanie_za = db.Column(db.Integer)
+    glosowanie_przeciw = db.Column(db.Integer)
+    glosowanie_wstrzymujacy = db.Column(db.Integer)
+    glosowanie_niewazne = db.Column(db.Integer)
+
+    uchwala = db.Column(db.String)
+    uwagi = db.Column(db.String)
+
+
+
+    def __repr__(self):
+        return f"{self.spoldzielnia} - {self.rok_kalendarzowy}"
+    
+    def as_dict(self):
+        return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'bylo': self.bylo, 'kiedy_bylo': self.kiedy_bylo, 'rok_kalendarzowy': self.rok_kalendarzowy, 'bilans': self.bilans, 'zysk_netto': self.zysk_netto, 'glosowanie_za': self.glosowanie_za, 'glosowanie_przeciw': self.glosowanie_przeciw, 'glosowanie_wstrzymujacy': self.glosowanie_wstrzymujacy, 'glosowanie_niewazne': self.glosowanie_niewazne, 'uchwala': self.uchwala, 'uwagi': self.uwagi}
