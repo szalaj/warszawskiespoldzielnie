@@ -130,5 +130,5 @@ def load_walne():
 
 if __name__ == "__main__":
     print('ehlo')
-    load_spoldzielnie()
+    load_walne()
     # load_sprawy()

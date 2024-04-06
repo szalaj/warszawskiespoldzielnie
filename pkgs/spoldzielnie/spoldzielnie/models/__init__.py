@@ -22,8 +22,8 @@ class Spoldzielnia(db.Model):
 
 
 
-    def __repr__(self):
-        return f"{self.nazwa} - {self.krs} - {self.kod_pocztowy}"
+    # def __repr__(self):
+    #     return f"{self.nazwa} - {self.krs} - {self.kod_pocztowy}"
     
     def as_dict(self):
         return {'nazwa': self.nazwa, 'szerokosc_geo': self.szerokosc_geo, 'dlugosc_geo': self.dlugosc_geo, 'krs': self.krs, 'nip': self.nip, 'regon': self.regon, 'adres': self.adres, 'kod_pocztowy': self.kod_pocztowy, 'miejscowosc': self.miejscowosc, 'forma_prawna': self.forma_prawna, 'data_rejestracji': self.data_rejestracji, 'status': self.status}
@@ -96,7 +96,7 @@ class Walne(db.Model):
 
 
     def __repr__(self):
-        return f"{self.spoldzielnia} - {self.rok_kalendarzowy}"
+        return f"{self.spoldzielnia} - {self.bilans}"
     
     def as_dict(self):
         return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'sprawozdanie_finansowe': self.sprawozdanie_finansowe, 'uchwala_zatw': self.uchwala_zatw, 'kiedy_bylo': self.kiedy_bylo, 'w_sprawie': self.w_sprawie, 'bilans': self.bilans, 'glosowanie_za': self.glosowanie_za, 'glosowanie_przeciw': self.glosowanie_przeciw, 'glosowanie_wstrzymujacy': self.glosowanie_wstrzymujacy, 'glosowanie_niewazne': self.glosowanie_niewazne, 'uwagi': self.uwagi}
