@@ -2,7 +2,7 @@
 # run with m switch from web/ $ python -m project.write_seed
 from spoldzielnie import init_app , db
 
-from spoldzielnie.models import Spoldzielnia, Sprawa
+from spoldzielnie.models import Spoldzielnia, Sprawa, Walne
 import csv
 import datetime
 import os
@@ -80,7 +80,55 @@ def load_spoldzielnie():
             db.session.add(d)
             db.session.commit()
 
+def load_walne():
+    with app.app_context():
+
+        df = pd.read_excel('../pkgs/spoldzielnie/spoldzielnie/dane/walne.ods',dtype=str, header=0)
+
+
+
+        for index, row in df.iterrows():
+
+            krs = row['krs']
+            zera = 10 - len(str(krs))
+            krs = '0'*zera + str(krs)     
+
+            def tak_nie(value):
+                value = value.strip().lower()
+                if value == 'tak':
+                    return True
+                elif value == 'nie':
+                    return False
+                else:
+                    raise ValueError(value)
+
+
+            sprawozdanie_value = tak_nie(row['sprawozdanie_finansowe'])
+            uchwala_zatw_value = tak_nie(row['uchwala_zatw'])
+
+            d = Walne(
+                spoldzielnia = krs,
+                sprawozdanie_finansowe = sprawozdanie_value,
+                uchwala_zatw = uchwala_zatw_value,
+                kiedy_bylo = None if pd.isna(row['kiedy_bylo']) else datetime.datetime.strptime(row['kiedy_bylo'], '%d-%m-%Y'),
+                w_sprawie = row['w_sprawie'],
+                bilans = row['bilans'],
+                glosowanie_za = row['za'],
+                glosowanie_przeciw = row['przeciw'],
+                glosowanie_wstrzymujacy = row['wstrzymujacy'],
+                glosowanie_niewazne = row['niewazne'],
+                uwagi = row['uwagi']
+
+            )
+            db.session.add(d)
+            db.session.commit()
+
+
+
+
+
+
 if __name__ == "__main__":
     print('ehlo')
-    load_spoldzielnie()
+    load_walne()
     # load_sprawy()
