@@ -88,9 +88,9 @@ div.info-nadtabela {
           <p class="title is-size-1">
               warszawskie spółdzielnie mieszkaniowe
           </p>
-          <p class="subtitle">&nbsp; konflikty, sprawy, opinie&nbsp;
+          <!-- <p class="subtitle">&nbsp;&nbsp;
             <div id="svgEmbed"></div>
-          </p>
+          </p> -->
         </div>
     </div>
       </section>
@@ -115,6 +115,7 @@ div.info-nadtabela {
 
             <!-- <th>Sprawy</th> -->
             <th>Adres</th>
+            <th>Bilans 2022</th>
 
             
           </tr>
@@ -161,14 +162,23 @@ div.info-nadtabela {
     var gw_svg = d3.svg("{{ url_for('static', filename='pics/gwiazdka2.svg') }}")
 
 
+    // var formatMoney = function (d) { return d3.format(".2f")(d) + " zł"; }
+  
 
-
+    // change formatMoney to separate thousands with space
+    var formatMoney = d3.formatMoney = function (d) { return d3.format(",.2f")(d) + " zł"; }
 
     Promise.all([warszawa, wisla, spol, gw_svg, sprawy, warszawa_dzielnice]).then(function(values){   
   
         console.log(values[2]);
         // logo
-        d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
+
+        // sort values[2] by bilans descending
+        values[2].sort(function(a, b) {
+            return b.bilans - a.bilans;
+        });
+
+        // d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
 
         values[0].features.forEach(function(feature) {
            feature.geometry.coordinates[0].reverse();
@@ -336,6 +346,18 @@ div.info-nadtabela {
         wiersz.append("td")
         .text(function (d) { return d.adres.toUpperCase()+", "+d.kod_pocztowy+", "+d.miejscowosc.toUpperCase()})
 
+        wiersz.append("td")
+        .text(function (d) { 
+            
+            if (d.bilans == "NaN" || d.bilans == "nan" || d.bilans==0 || d.bilans == "" || d.bilans == null) {
+                return "brak danych";
+            }
+            else{
+                return formatMoney(d.bilans);
+            }             
+             })
+
+
 
         // d3.selectAll("tbody").append("tr","tr")
 
@@ -352,7 +374,7 @@ div.info-nadtabela {
             // get string from date object sprawa.data_rozpoczenia
             let data_rozpoczenia = formatTime(new Date(sprawa.data_rozpoczenia));
 
-            let ih = "<td></td><td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td>"
+            let ih = "<td></td><td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td><td></td>"
 
             
 
@@ -420,30 +442,30 @@ div.info-nadtabela {
         .attr("stroke", "black")
         .attr("stroke-width", 1)
 
-        g_legenda
-        .append("circle")
-        .attr("cx", 0)
-        .attr("cy", 40)
-        .attr("r", "12px")
-        .attr("fill", "none")
-        .attr("stroke", "black")
-        .attr("stroke-width", 0.5)
+        // g_legenda
+        // .append("circle")
+        // .attr("cx", 0)
+        // .attr("cy", 40)
+        // .attr("r", "12px")
+        // .attr("fill", "none")
+        // .attr("stroke", "black")
+        // .attr("stroke-width", 0.5)
 
         g_legenda.append("text")
         .attr('x', 20)
         .attr('y', 44)
         .text("- SM z nieuregulowanymi gruntami")
 
-        g_legenda.append("path").attr("d", d3.symbol(d3.symbolStar, 200))
-        .attr("fill", "red")
-        .attr("stroke", "black")
-        .attr("stroke-width", 1)
-        .attr("transform", "translate(0, 80)")
+        // g_legenda.append("path").attr("d", d3.symbol(d3.symbolStar, 200))
+        // .attr("fill", "red")
+        // .attr("stroke", "black")
+        // .attr("stroke-width", 1)
+        // .attr("transform", "translate(0, 80)")
 
-        g_legenda.append("text")
-        .attr('x', 20)
-        .attr('y', 84)
-        .text("- sprawa (artykuł prasowy)")
+        // g_legenda.append("text")
+        // .attr('x', 20)
+        // .attr('y', 84)
+        // .text("- sprawa (artykuł prasowy)")
 
         // .attr("cx", function(d) {
         //     console.log(d);
