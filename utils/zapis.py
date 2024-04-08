@@ -69,6 +69,7 @@ def load_spoldzielnie():
                 nip=row['nip'],
                 regon=row['regon'],
                 adres=row['adres'],
+                dzielnica=row['dzielnica'],
                 kod_pocztowy=row['kod_pocztowy'],
                 miejscowosc=row['miejscowosc'],
                 forma_prawna=row['forma_prawna'],
@@ -130,5 +131,6 @@ def load_walne():
 
 if __name__ == "__main__":
     print('ehlo')
-    load_walne()
+    #load_walne()
+    load_spoldzielnie()
     # load_sprawy()

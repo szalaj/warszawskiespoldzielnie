@@ -48,8 +48,7 @@ def spoldzielnie_dane():
 
     S=[]
     for s, w in result:
-        print(s.krs)
-        print(w)
+
         S.append({
             'krs': s.krs,
             'bilans': w.bilans,
@@ -58,6 +57,7 @@ def spoldzielnie_dane():
             'dlugosc_geo': s.dlugosc_geo,
             'kod_pocztowy': s.kod_pocztowy,
             'miejscowosc': s.miejscowosc,
+            'dzielnica': s.dzielnica,
             'forma_prawna': s.forma_prawna,
             'data_rejestracji': s.data_rejestracji,
             'status': s.status,

@@ -344,7 +344,7 @@ div.info-nadtabela {
 
 
         wiersz.append("td")
-        .text(function (d) { return d.adres.toUpperCase()+", "+d.kod_pocztowy+", "+d.miejscowosc.toUpperCase()})
+        .text(function (d) { return d.adres.toUpperCase()+", "+d.kod_pocztowy+", "+d.miejscowosc.toUpperCase() + " ("+d.dzielnica.toUpperCase()+")"})
 
         wiersz.append("td")
         .text(function (d) { 
