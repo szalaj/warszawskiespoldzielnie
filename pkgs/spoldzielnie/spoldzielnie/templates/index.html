@@ -140,7 +140,7 @@ div.info-nadtabela {
     </div>
   </footer>
 <script type="module">
-    import { wykres_spoldzielni } from '{{ url_for("static", filename="charts.js")}}';
+    import { wykres_spoldzielni , daj_mi_wykres } from '{{ url_for("static", filename="charts.js")}}';
 
     var w = 1400;
     var h = 700;
@@ -477,6 +477,17 @@ div.info-nadtabela {
         // .attr("stroke", "black")
         // .attr("stroke-width", 1)
 
+        d3.select("div#chart2").node().appendChild(wykres_spoldzielni(''));
+
+
+
+
+        let dane_w = daj_mi_wykres(values[2]);
+        console.log(dane_w);
+
+        let suma_wszystkich = d3.sum(values[2], function(d) { return d.bilans; });
+        console.log(suma_wszystkich);
+
     });
     // d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}").then(function(data) {
     //     console.log(data.features);
@@ -513,7 +524,6 @@ div.info-nadtabela {
 
 
 
-    d3.select("div#chart2").node().appendChild(wykres_spoldzielni(''));
 
 </script>
 </body>
