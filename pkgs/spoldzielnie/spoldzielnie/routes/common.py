@@ -5,6 +5,8 @@ import csv
 import pandas as pd
 from os.path import join, dirname, realpath
 from spoldzielnie import db
+from datetime import datetime
+
 
 STATIC_FOLDER = join(dirname(realpath(__file__)), '../static')
 common = Blueprint('common', __name__)
@@ -82,3 +84,30 @@ def sprawy_dane():
 def walne_dane():
     S = Sprawa.query.order_by(Walne.spoldzielnia).all()
     return jsonify([s.as_dict() for s in S])
+
+
+
+@common.route('/czujnik', methods=['GET'])
+def czunik():
+    with open(join(STATIC_FOLDER, 'czujnik.txt'), 'a') as f:
+        # current datetime
+        now = datetime.now()
+
+        # convert datetime object to string
+        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
+
+        f.write(timestamp_str+"\n")
+    print(STATIC_FOLDER)
+    return "czujnik"
+
+
+# create a route which reads the czujnik.txt file and returns the content, keep  new lines
+@common.route('/czujnik_history', methods=['GET'])
+def czujnik_history():
+    with open(join(STATIC_FOLDER, 'czujnik.txt'), 'r') as f:
+        content = f.read()
+        content = content.replace('\n', '<br>')
+        content_array = content.split('<br>')
+        content_array.reverse()
+        content = '<br>'.join(content_array)
+    return content
