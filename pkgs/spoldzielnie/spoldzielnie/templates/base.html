@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="{{ url_for('static', filename='d3.v7.js')}}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.css')}}">
+<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" >
+<title>Warszawskie spółdzielnie mieszkaniowe</title>
+<style>
+
+.continent {
+    fill: url(#svgGradient);
+    stroke: #ff9a02;
+    stroke-width: 7px;
+}
+
+.dzielnice {
+    /* fill: rgb(230, 199, 96); */
+    fill: url(#svgGradient);
+    stroke: #5f2848;
+    stroke-width: 1px;
+}
+
+.wisla {
+    fill: none;
+    stroke: #a3b9ff;
+    stroke-width: 10px;
+}
+
+
+.labels {
+    font-family: sans-serif;
+    font-size: 11px;
+    fill: #3c373d;
+}
+
+p.title {
+/* text-shadow:
+    2px 2px 2px #d6693d;
+    2px 2px 1px red; */
+    background-color: #FFFffF;
+
+
+
+}
+
+p.subtitle {
+  color: #ffffff;
+/* text-shadow:
+    2px 1px 1px rgb(103, 66, 104),
+    2px 2px 1px red; */
+    background-color: #e07f7f;
+width:246px;
+}
+
+
+
+tr.spoldzielnia{
+    color: black;
+    background-color: rgb(147, 230, 255);
+}
+
+
+tr.spoldzielnia_grunty{
+    color: black;
+    background-color: rgb(0, 154, 201);
+}
+
+div.info-nadtabela {
+    background-color: #d8e6e9;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    margin: 20px;
+    border-radius: 10px;
+
+}
+
+line.gridline {
+    fill: none;
+    stroke-width: 1px;
+    stroke: black;
+    border-style: dotted;
+    stroke-dasharray: 5;
+  }
+
+</style>
+</head>
+
+<body>
+    <section class="hero">
+        <div class="container">
+        <div class="hero-body">
+          <p class="title is-size-1">
+              warszawskie spółdzielnie mieszkaniowe
+          </p>
+          <!-- <p class="subtitle">&nbsp;&nbsp;
+            <div id="svgEmbed"></div>
+          </p> -->
+        </div>
+    </div>
+    </section>
+    <section>
+
+    <div class="container">
+    <nav class="breadcrumb is-centered" aria-label="breadcrumbs">
+        <ul>
+          <li><a href="{{ url_for('common.main')}}">Grafiki</a></li>
+          <li><a href="{{ url_for('common.spoldzielnie')}}">Spółdzielnie</a></li>
+          <li><a href="{{ url_for('common.artykuly')}}">Artykuły</a></li>
+          <li ><a href="#" aria-current="page">Organizacje</a></li>
+          
+          <li><a href="#">Materiały</a></li>
+          <li class="is-active"><a href="#" aria-current="page">Radni</a></li>
+        </ul>
+      </nav>
+    </div>  
+      </section>
+      <section>
+
+        <div class="container">
+            <br><br>
+        </div>
+    </section>
+      {% block content %}{% endblock %}
+      <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+            <strong>warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-04-14]
+    </p>
+          <p>
+            Wersja robocza. Twórcy nie ponoszą odpowiedzialności za poprawność danych.
+          
+          </p>
+        </div>
+      </footer>
+    </body>
+    </html>

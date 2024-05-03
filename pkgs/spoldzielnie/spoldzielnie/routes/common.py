@@ -37,6 +37,20 @@ def main():
 
     return render_template('index.html')
 
+
+@common.route('/spoldzielnie', methods=['GET'])
+def spoldzielnie():
+
+
+
+
+    return render_template('spoldzielnia.html')
+
+@common.route('/artykuly', methods=['GET'])
+def artykuly():
+
+    return render_template('artykuly.html')
+
 @common.route('/spoldzielnie_dane', methods=['GET'])
 def spoldzielnie_dane():
 
