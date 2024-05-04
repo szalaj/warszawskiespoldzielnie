@@ -48,8 +48,37 @@ def spoldzielnie():
 
 @common.route('/artykuly', methods=['GET'])
 def artykuly():
-
     return render_template('artykuly.html')
+
+@common.route('/artykuly_dane', methods=['GET'])
+def artykuly_dane():
+
+    result = db.session.query(Sprawa, Spoldzielnia).join(
+        Spoldzielnia, Spoldzielnia.krs == Sprawa.spoldzielnia, 
+        isouter=True).all()
+    
+
+    S=[]
+    for spr, s in result:
+
+        S.append({
+            'krs': s.krs,
+            'nazwa': s.nazwa,
+            'miejscowosc': s.miejscowosc,
+            'data_rozpoczenia': spr.data_rozpoczenia,
+            'kategoria': spr.kategoria,
+            'opis': spr.opis,
+            'status': spr.status,
+            'rozwiazanie': spr.rozwiazanie,
+            'odnosniki': spr.odnosniki
+
+
+        }
+            
+        )
+
+    return jsonify([s for s in S])
+
 
 @common.route('/spoldzielnie_dane', methods=['GET'])
 def spoldzielnie_dane():
