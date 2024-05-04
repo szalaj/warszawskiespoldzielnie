@@ -5,6 +5,8 @@ import csv
 import pandas as pd
 from os.path import join, dirname, realpath
 from spoldzielnie import db
+from datetime import datetime
+
 
 STATIC_FOLDER = join(dirname(realpath(__file__)), '../static')
 common = Blueprint('common', __name__)
@@ -35,6 +37,49 @@ def main():
 
     return render_template('index.html')
 
+
+@common.route('/spoldzielnie', methods=['GET'])
+def spoldzielnie():
+
+
+
+
+    return render_template('spoldzielnia.html')
+
+@common.route('/artykuly', methods=['GET'])
+def artykuly():
+    return render_template('artykuly.html')
+
+@common.route('/artykuly_dane', methods=['GET'])
+def artykuly_dane():
+
+    result = db.session.query(Sprawa, Spoldzielnia).join(
+        Spoldzielnia, Spoldzielnia.krs == Sprawa.spoldzielnia, 
+        isouter=True).all()
+    
+
+    S=[]
+    for spr, s in result:
+
+        S.append({
+            'krs': s.krs,
+            'nazwa': s.nazwa,
+            'miejscowosc': s.miejscowosc,
+            'data_rozpoczenia': spr.data_rozpoczenia,
+            'kategoria': spr.kategoria,
+            'opis': spr.opis,
+            'status': spr.status,
+            'rozwiazanie': spr.rozwiazanie,
+            'odnosniki': spr.odnosniki
+
+
+        }
+            
+        )
+
+    return jsonify([s for s in S])
+
+
 @common.route('/spoldzielnie_dane', methods=['GET'])
 def spoldzielnie_dane():
 
@@ -48,8 +93,7 @@ def spoldzielnie_dane():
 
     S=[]
     for s, w in result:
-        print(s.krs)
-        print(w)
+
         S.append({
             'krs': s.krs,
             'bilans': w.bilans,
@@ -58,6 +102,7 @@ def spoldzielnie_dane():
             'dlugosc_geo': s.dlugosc_geo,
             'kod_pocztowy': s.kod_pocztowy,
             'miejscowosc': s.miejscowosc,
+            'dzielnica': s.dzielnica,
             'forma_prawna': s.forma_prawna,
             'data_rejestracji': s.data_rejestracji,
             'status': s.status,
@@ -82,3 +127,30 @@ def sprawy_dane():
 def walne_dane():
     S = Sprawa.query.order_by(Walne.spoldzielnia).all()
     return jsonify([s.as_dict() for s in S])
+
+
+
+@common.route('/czujnik', methods=['GET'])
+def czunik():
+    with open(join(STATIC_FOLDER, 'czujnik.txt'), 'a') as f:
+        # current datetime
+        now = datetime.now()
+
+        # convert datetime object to string
+        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
+
+        f.write(timestamp_str+"\n")
+    print(STATIC_FOLDER)
+    return "czujnik"
+
+
+# create a route which reads the czujnik.txt file and returns the content, keep  new lines
+@common.route('/czujnik_history', methods=['GET'])
+def czujnik_history():
+    with open(join(STATIC_FOLDER, 'czujnik.txt'), 'r') as f:
+        content = f.read()
+        content = content.replace('\n', '<br>')
+        content_array = content.split('<br>')
+        content_array.reverse()
+        content = '<br>'.join(content_array)
+    return content

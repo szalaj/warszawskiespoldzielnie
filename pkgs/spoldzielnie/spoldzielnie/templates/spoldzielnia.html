@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <br><br>
+    <div class="table-container">
+        <div class="info-nadtabela">
+      <p><i>Poniższa lista może być niezupełna lub nieaktualna.</i></p>
+    </div>
+    <table class="table">
+        <thead>
+          <tr>
+            <th>lp</th>
+            <th>Nazwa</th>
+            <th>KRS</th>
+
+            <!-- <th>Sprawy</th> -->
+            <th>Adres</th>
+            <th>Bilans 2022</th>
+
+            
+          </tr>
+        </thead>
+  
+      </table>
+    </div>
+</div>
+<script type="module">
+
+var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}")
+    var warszawa_dzielnice = d3.json("{{ url_for('static', filename='dzielnice/warszawa-dzielnice.geojson') }}")
+    var wisla = d3.json("{{ url_for('static', filename='dzielnice/wisla.geojson') }}")
+
+    // var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
+
+
+    var spol = d3.json({{ url_for("common.spoldzielnie_dane") | tojson }})
+    var sprawy = d3.json({{ url_for("common.sprawy_dane") | tojson }})
+    var gw_svg = d3.svg("{{ url_for('static', filename='pics/gwiazdka2.svg') }}")
+
+    var formatMoney = d3.formatMoney = function (d) { return d3.format(",.2f")(d) + " zł"; }
+
+    Promise.all([warszawa, wisla, spol, gw_svg, sprawy, warszawa_dzielnice]).then(function(values){  
+
+
+
+        let tabela = d3.select("table")
+
+        let wiersz = tabela.append("tbody")
+        .selectAll("tr").data(values[2])
+        .enter().append("tr").attr("id", function(d) {return d.krs})
+        .attr('class', 'spoldzielnia')
+
+
+        wiersz.append("td")
+        .html(function (d,i) { return (i+1)+"." })
+
+        wiersz.append("td")
+        .html(function (d,i) { return "&#9679; " + d.nazwa })
+
+
+
+        wiersz.append("td")
+        .text(function (d) { return d.krs })
+
+
+        wiersz.append("td")
+        .text(function (d) { return d.adres.toUpperCase()+", "+d.kod_pocztowy+", "+d.miejscowosc.toUpperCase() + " ("+d.dzielnica.toUpperCase()+")"})
+
+        wiersz.append("td")
+        .text(function (d) { 
+            
+            if (d.bilans == "NaN" || d.bilans == "nan" || d.bilans==0 || d.bilans == "" || d.bilans == null) {
+                return "brak danych";
+            }
+            else{
+                return formatMoney(d.bilans);
+            }             
+             })
+
+
+
+        // d3.selectAll("tbody").append("tr","tr")
+
+        const formatTime = d3.utcFormat("%Y-%m-%d");
+
+        values[4].forEach(function(sprawa) {
+           
+
+
+            var x = document.getElementById(sprawa.spoldzielnia);
+            let t = document.createElement('tr');
+            x.parentNode.insertBefore(t, x.nextSibling);  
+
+            // get string from date object sprawa.data_rozpoczenia
+            let data_rozpoczenia = formatTime(new Date(sprawa.data_rozpoczenia));
+
+            let ih = "<td></td><td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td><td></td>"
+
+            
+
+              t.ih += "<td>"
+            
+            let odnosniki = sprawa.odnosniki.split("|");
+            odnosniki.forEach(function(odnosnik) {
+                ih += "<a href='"+odnosnik+"'>"+odnosnik+"</a><br><br>"
+              
+            });
+            ih += "</td>"
+
+            t.innerHTML = ih;
+  
+    
+        })
+
+    })
+
+
+</script>
+{% endblock %}

@@ -1,145 +1,29 @@
-<!doctype html>
-<html>
+{% extends 'base.html' %}
+{% block content %}
 
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<script src="{{ url_for('static', filename='d3.v7.js')}}"></script>
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.css')}}">
-<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" >
-<title>Warszawskie spółdzielnie mieszkaniowe</title>
-<style>
-
-.continent {
-    fill: url(#svgGradient);
-    stroke: #ff9a02;
-    stroke-width: 7px;
-}
-
-.dzielnice {
-    /* fill: rgb(230, 199, 96); */
-    fill: url(#svgGradient);
-    stroke: #5f2848;
-    stroke-width: 1px;
-}
-
-.wisla {
-    fill: none;
-    stroke: #a3b9ff;
-    stroke-width: 10px;
-}
-
-
-.labels {
-    font-family: sans-serif;
-    font-size: 11px;
-    fill: #3c373d;
-}
-
-p.title {
-/* text-shadow:
-    2px 2px 2px #d6693d;
-    2px 2px 1px red; */
-    background-color: #FFFffF;
-
-
-
-}
-
-p.subtitle {
-  color: #ffffff;
-/* text-shadow:
-    2px 1px 1px rgb(103, 66, 104),
-    2px 2px 1px red; */
-    background-color: #e07f7f;
-width:246px;
-}
-
-
-
-tr.spoldzielnia{
-    color: black;
-    background-color: rgb(147, 230, 255);
-}
-
-
-tr.spoldzielnia_grunty{
-    color: black;
-    background-color: rgb(0, 154, 201);
-}
-
-div.info-nadtabela {
-    background-color: #d8e6e9;
-    color: rgb(0, 0, 0);
-    padding: 10px;
-    margin: 20px;
-    border-radius: 10px;
-
-}
-</style>
-</head>
-
-<body>
-    <section class="hero">
-        <div class="container">
-        <div class="hero-body">
-          <p class="title is-size-1">
-              warszawskie spółdzielnie mieszkaniowe
-          </p>
-          <!-- <p class="subtitle">&nbsp;&nbsp;
-            <div id="svgEmbed"></div>
-          </p> -->
-        </div>
-    </div>
-      </section>
+<section>
 <div class="container">
    
     
     <div id="chart"></div>
+
 </div>
+
 <div class="container">
-    <br><br>
-    <div class="table-container">
-        <div class="info-nadtabela">
-      <p><i>Lista spółdzielni o nieuregulowanych gruntach pochodzi ze strony <a href="https://www.wlasnosc.waw.pl/">wlasnosc.waw.pl</a></i></p>
-      <p><i>Poniższa lista może być niezupełna lub nieaktualna.</i></p>
-    </div>
-    <table class="table">
-        <thead>
-          <tr>
-            <th>lp</th>
-            <th>Nazwa</th>
-            <th>KRS</th>
 
-            <!-- <th>Sprawy</th> -->
-            <th>Adres</th>
-            <th>Bilans 2022</th>
-
-            
-          </tr>
-        </thead>
-  
-      </table>
+<div class="columns">
+    <div class="column" id="chart2"></div>
+    <div class="column" id="chart3"></div>
+    <div class="column" id="chart4"></div>
     </div>
-</div>
+    </div>
+
 <div class="container">
     <br><br>
 </div>
-<footer class="footer">
-    <div class="content has-text-centered">
-      <p>
-        <strong>warszawskie spółdzielnie mieszkaniowe</strong> [wersja 2024-04-07]
-</p>
-      <p>
-        Wersja robocza. Twórcy nie ponoszą odpowiedzialności za poprawność danych.
-      
-      </p>
-    </div>
-  </footer>
+</section>
 <script type="module">
-
+    import { wykres_spoldzielni , daj_mi_wykres , pogrupuj, pogrupuj2    } from '{{ url_for("static", filename="charts.js")}}';
 
     var w = 1400;
     var h = 700;
@@ -277,134 +161,15 @@ div.info-nadtabela {
         }
         )
         .attr("fill", function(d) {
-            if (d.status == "uregulowane") {
                 return 'rgb(147, 230, 255)'
-            } else if (d.status == "nieuregulowane") {
-                return '#2c89a0'
-            } else {
-                return 'rgb(147, 230, 255)'
-            }
+            
         })
         .attr("stroke", "black")
         .attr("stroke-width", 1)
         .attr("opacity", 0.7)
         
 
-        // g_spol.filter(function(d){ return d.status == "nieuregulowane"; })
-        // .append("circle")
-        // .attr("cx", 0)
-        // .attr("cy", 0)
-        // .attr("r", "6px")
-        // .attr("fill", "none")
-        // .attr("stroke", "black")
-        // .attr("stroke-width", 0.5)
-
-        // g_spol.filter(function(d){ return d.status == "nieuregulowane"; })
-        // .append("text")
-        // .attr("x", -6)
-        // .attr("y", 5.5)
-        // .text("X")
-        // .attr("fill", "blue")
-
-        // .attr("stroke", function(d) {
-        //     if (d.status == "uregulowane") {
-        //         return "black"
-        //     } else if (d.status == "nieuregulowane") {
-        //         return "red"
-        //     } else {
-        //         return "orange"
-        //     }
-        // })
-        // .attr("stroke-width", 4)
-
-        let tabela = d3.select("table")
-
-        let wiersz = tabela.append("tbody")
-        .selectAll("tr").data(values[2])
-        .enter().append("tr").attr("id", function(d) {return d.krs})
-        .attr('class', function(d) {
-            if (d.status == "nieuregulowane") {
-                return "spoldzielnia_grunty"
-            } else {
-                return "spoldzielnia"
-            }
-        })
-
-
-        wiersz.append("td")
-        .html(function (d,i) { return (i+1)+"." })
-
-        wiersz.append("td")
-        .html(function (d,i) { return "&#9679; " + d.nazwa })
-
-
-
-        wiersz.append("td")
-        .text(function (d) { return d.krs })
-
-
-        wiersz.append("td")
-        .text(function (d) { return d.adres.toUpperCase()+", "+d.kod_pocztowy+", "+d.miejscowosc.toUpperCase()})
-
-        wiersz.append("td")
-        .text(function (d) { 
-            
-            if (d.bilans == "NaN" || d.bilans == "nan" || d.bilans==0 || d.bilans == "" || d.bilans == null) {
-                return "brak danych";
-            }
-            else{
-                return formatMoney(d.bilans);
-            }             
-             })
-
-
-
-        // d3.selectAll("tbody").append("tr","tr")
-
-        const formatTime = d3.utcFormat("%Y-%m-%d");
-
-        values[4].forEach(function(sprawa) {
-           
-
-
-            var x = document.getElementById(sprawa.spoldzielnia);
-            let t = document.createElement('tr');
-            x.parentNode.insertBefore(t, x.nextSibling);  
-
-            // get string from date object sprawa.data_rozpoczenia
-            let data_rozpoczenia = formatTime(new Date(sprawa.data_rozpoczenia));
-
-            let ih = "<td></td><td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td><td></td>"
-
-            
-
-              t.ih += "<td>"
-            
-            let odnosniki = sprawa.odnosniki.split("|");
-            odnosniki.forEach(function(odnosnik) {
-                ih += "<a href='"+odnosnik+"'>"+odnosnik+"</a><br><br>"
-              
-            });
-            ih += "</td>"
-
-            t.innerHTML = ih;
   
-    
-        })
-
-        // svg.selectAll("g.sprawa")
-        // .data(values[4])
-        // .enter()
-        // .append("g")
-        // .attr("class","sprawa")
-        // .attr("transform", function(d) {
-        //     return "translate("+projection([d.dlugosc_geo, d.szerokosc_geo])+")"
-        // })
-        // .append("path").attr("d", d3.symbol(d3.symbolStar, 90))
-        // .attr("fill", "red")
-        // .attr("stroke", "black")
-        // .attr("stroke-width", 1)
-
 
 
 
@@ -433,82 +198,31 @@ div.info-nadtabela {
 
 
 
-        g_legenda.append("circle")
-        .attr("class","spoldzielnia")
-        .attr("cx", 0)
-        .attr("cy", 40)
-        .attr("r", "8px")
-        .attr("fill", '#3c70e8')
-        .attr("stroke", "black")
-        .attr("stroke-width", 1)
 
-        // g_legenda
-        // .append("circle")
-        // .attr("cx", 0)
-        // .attr("cy", 40)
-        // .attr("r", "12px")
-        // .attr("fill", "none")
-        // .attr("stroke", "black")
-        // .attr("stroke-width", 0.5)
+        let dane_w = pogrupuj(values[2]);
+        console.log(dane_w);
 
-        g_legenda.append("text")
-        .attr('x', 20)
-        .attr('y', 44)
-        .text("- SM z nieuregulowanymi gruntami")
+        let suma_wszystkich = d3.sum(values[2], function(d) { return d.bilans; });
+        console.log(suma_wszystkich);
 
-        // g_legenda.append("path").attr("d", d3.symbol(d3.symbolStar, 200))
-        // .attr("fill", "red")
-        // .attr("stroke", "black")
-        // .attr("stroke-width", 1)
-        // .attr("transform", "translate(0, 80)")
+        let wyk = daj_mi_wykres(dane_w, 'Rys. Suma bilansów SM za rok 2022, wg dzielnic.');
 
-        // g_legenda.append("text")
-        // .attr('x', 20)
-        // .attr('y', 84)
-        // .text("- sprawa (artykuł prasowy)")
+        console.log(wyk);
 
-        // .attr("cx", function(d) {
-        //     console.log(d);
-        //     return projection([d.dlugosc_geo, d.szerokosc_geo])[0];})
-        // .attr("cy", function(d) {return projection([d.dlugosc_geo, d.szerokosc_geo])[1];})
-        // .attr("r", "6px")
-        // .attr("fill", "blue")
-        // .attr("stroke", "black")
-        // .attr("stroke-width", 1)
+        d3.select("div#chart2").node().appendChild(wyk);
+
+        let dane_w2 = pogrupuj2(values[2]);
+        let wyk2 = daj_mi_wykres(dane_w2, 'Rys. Liczba SM według dzielnic.');
+
+            console.log(wyk2);
+
+            d3.select("div#chart3").node().appendChild(wyk2);
 
     });
-    // d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}").then(function(data) {
-    //     console.log(data.features);
-
-    //     // data.features.forEach(function(feature) {
-    //     //     feature.geometry.coordinates[0].reverse();
-    //     // });
-
-    //     svg.selectAll("path")
-    //     .data(data.features)
-    //     .enter()
-    //     .append("path")
-    //     .attr("class","continent")
-    //     .attr("d", path)
 
 
 
-    // });
-
-    // d3.json("{{ url_for('static', filename='dzielnice/spol.geojson') }}").then(function(data) {
-    //     svg.selectAll("circle")
-    //     .data(data.features)
-    //     .enter()
-    //     .append("circle")
-    //     .attr("class","circles")
-    //     .attr("cx", function(d) {
-    //         console.log(d.geometry.coordinates[0]);
-    //         return projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])[0];})
-    //     .attr("cy", function(d) {return projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])[1];})
-    //     .attr("r", "6px"),
-    //     console.log(data);
-    // });
 
 </script>
-</body>
-</html>
+{% endblock %}
+

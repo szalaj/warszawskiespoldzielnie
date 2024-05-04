@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <br><br>
+    <div id="sprawy">
+
+    </div>
+    <div>
+
+    </div>
+</div>
+<script type="module">
+
+
+    // var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
+
+
+    var artykuly = d3.json({{ url_for("common.artykuly_dane") | tojson }})
+
+
+    var formatMoney = d3.formatMoney = function (d) { return d3.format(",.2f")(d) + " zł"; }
+    var d_parse = d3.utcParse("%a, %d %b %Y %H:%M:%S GMT")
+    var d_format = d3.utcFormat("%Y-%m-%d")
+
+    Promise.all([ artykuly]).then(function([artykuly]){  
+
+
+        console.log(artykuly);
+
+        
+        var sprawy = d3.select("div#sprawy").selectAll("div")
+            .data(artykuly)
+            .enter()
+            .append("div")
+            .attr("class","box")
+            .append("div")
+            .attr("class","columns")
+        
+        sprawy.append("div")
+            .attr("class","column")
+            .append("p")
+            .text(function(d){return d.nazwa})
+
+            sprawy.append("div")
+            .attr("class","column")
+            .append("p")
+            .text(function(d){return d.miejscowosc})
+
+        sprawy.append("div")
+            .attr("class","column")
+            .append("p")
+            .text(function(d){return d.kategoria})
+
+    
+        sprawy.append("div")
+            .attr("class","column")
+            .append("p")
+            .text(function(d){return d_format(d_parse(d.data_rozpoczenia))})
+
+            //format d.data_rozpoczecia to dd-mm-yyyy
+            // sprawy.append("div")
+            // .attr("class","column")
+            // .append("p")
+            // .text(function(d){return d.data_rozpoczenia})
+
+
+            
+    
+        sprawy.append("div")
+            .attr("class","column")
+            .append("p")
+            .text(function(d){return d.opis})
+
+        sprawy.append("div")
+            .attr("class","column")
+            .selectAll("p")
+            .data(function(d){return d.odnosniki.split("|")})
+            .enter()
+            .append("p")
+            .attr("style", "font-size: 14px; margin-bottom: 14px;")
+            .append("a")
+            .attr("href",function(d){return d})
+            .text(function(d){return d})      
+
+
+            // split d.odnosniki by |
+            // sprawy.append("div")
+            // .attr("class","column")
+            // .selectAll("p")
+            // .data(function(d){return d.odnosniki.split("|")})
+    })
+
+
+</script>
+{% endblock %}
