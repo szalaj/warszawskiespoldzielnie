@@ -97,3 +97,38 @@ class Walne(db.Model):
     
     def as_dict(self):
         return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'sprawozdanie_finansowe': self.sprawozdanie_finansowe, 'uchwala_zatw': self.uchwala_zatw, 'kiedy_bylo': self.kiedy_bylo, 'w_sprawie': self.w_sprawie, 'bilans': self.bilans, 'glosowanie_za': self.glosowanie_za, 'glosowanie_przeciw': self.glosowanie_przeciw, 'glosowanie_wstrzymujacy': self.glosowanie_wstrzymujacy, 'glosowanie_niewazne': self.glosowanie_niewazne, 'uwagi': self.uwagi}
+    
+
+class Organizacja(db.Model):
+    __tablename__ = 'organizacja'
+
+
+    nr = db.Column(db.Integer, primary_key=True) 
+    data_dodania = db.Column(db.DateTime(timezone=True), server_default=func.now())
+
+    spoldzielnia = db.Column(db.String, db.ForeignKey("spoldzielnia.krs"), nullable=False)
+
+
+
+    data_powstania = db.Column(db.DateTime())
+    data_koniec = db.Column(db.DateTime())
+
+    nazwa = db.Column(db.String)
+    status = db.Column(db.String)
+    dzialalnosc = db.Column(db.String)
+    opis = db.Column(db.String)
+    miejscowosc = db.Column(db.String)
+
+    odnosniki = db.Column(db.String)
+    uwagi = db.Column(db.String)
+
+    szerokosc_geo = db.Column(db.String)
+    dlugosc_geo = db.Column(db.String)
+
+
+
+    def __repr__(self):
+        return f"{self.spoldzielnia} - {self.opis}"
+    
+    def as_dict(self):
+        return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'data_powstania': self.data_powstania, 'data_koniec': self.data_koniec, 'nazwa': self.nazwa, 'status': self.status, 'dzialalnosc': self.dzialalnosc, 'opis': self.opis, 'miejscowosc': self.miejscowosc, 'odnosniki': self.odnosniki, 'uwagi': self.uwagi, 'szerokosc_geo': self.szerokosc_geo, 'dlugosc_geo': self.dlugosc_geo}
