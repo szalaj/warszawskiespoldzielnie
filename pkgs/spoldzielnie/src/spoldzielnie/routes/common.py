@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, send_file, sessions, jsonify
 import geojson
-from ..models import Spoldzielnia, Sprawa, Walne
+from spoldzielnie.models import Spoldzielnia, Sprawa, Walne
 import csv
 import pandas as pd
 from os.path import join, dirname, realpath
 from spoldzielnie import db
 from datetime import datetime
-
+from loguru import logger
 
 STATIC_FOLDER = join(dirname(realpath(__file__)), '../static')
 common = Blueprint('common', __name__)
@@ -18,7 +18,7 @@ def favicon():
 
 @common.route('/', methods=['GET', 'POST'])
 def main():
-
+    logger.info(f"GET request na głównym widoku")
     # kr = Spoldzielnia.query.all()
 
     # S = [i.as_dict() for i in kr]
@@ -41,9 +41,6 @@ def main():
 @common.route('/spoldzielnie', methods=['GET'])
 def spoldzielnie():
 
-
-
-
     return render_template('spoldzielnia.html')
 
 @common.route('/artykuly', methods=['GET'])
@@ -62,9 +59,9 @@ def artykuly_dane():
     for spr, s in result:
 
         S.append({
-            'krs': s.krs,
-            'nazwa': s.nazwa,
-            'miejscowosc': s.miejscowosc,
+            'krs': s.krs if s else 'None',
+            'nazwa': s.nazwa if s else '',
+            'miejscowosc': s.miejscowosc if s else 'POLSKA',
             'data_rozpoczenia': spr.data_rozpoczenia,
             'kategoria': spr.kategoria,
             'opis': spr.opis,
