@@ -2,6 +2,22 @@
 {% block content %}
 <div class="container">
     <br><br>
+    <table class="table">
+        <thead>
+          <tr>
+            <th>lp</th>
+            <th>nazwa</th>
+            <th>miejscowosc</th>
+            <th>kategoria</th>
+            <th>data początkowa</th>
+            <th>opis</th>
+            <th>odnosniki</th>
+
+            
+          </tr>
+        </thead>
+  
+      </table>
     <div id="sprawy">
 
     </div>
@@ -27,60 +43,61 @@
 
         console.log(artykuly);
 
-        
-        var sprawy = d3.select("div#sprawy").selectAll("div")
-            .data(artykuly)
-            .enter()
-            .append("div")
-            .attr("class","box")
-            .append("div")
-            .attr("class","columns")
-        
-        sprawy.append("div")
-            .attr("class","column")
-            .append("p")
-            .text(function(d){return d.nazwa})
+        let tabela = d3.select("table")
 
-            sprawy.append("div")
-            .attr("class","column")
-            .append("p")
-            .text(function(d){return d.miejscowosc})
-
-        sprawy.append("div")
-            .attr("class","column")
-            .append("p")
-            .text(function(d){return d.kategoria})
-
-    
-        sprawy.append("div")
-            .attr("class","column")
-            .append("p")
-            .text(function(d){return d_format(d_parse(d.data_rozpoczenia))})
-
-            //format d.data_rozpoczecia to dd-mm-yyyy
-            // sprawy.append("div")
-            // .attr("class","column")
-            // .append("p")
-            // .text(function(d){return d.data_rozpoczenia})
+        let wiersz = tabela.append("tbody")
+        .selectAll("tr").data(artykuly)
+        .enter()
+        .append("tr")
+        // .attr("id", function(d) {return d.krs})
+        .attr('class', 'artykuly')
 
 
-            
-    
-        sprawy.append("div")
-            .attr("class","column")
-            .append("p")
-            .text(function(d){return d.opis})
+        wiersz.append("td")
+        .html(function (d,i) { return (i+1)+"." })
 
-        sprawy.append("div")
-            .attr("class","column")
-            .selectAll("p")
-            .data(function(d){return d.odnosniki.split("|")})
-            .enter()
-            .append("p")
-            .attr("style", "font-size: 14px; margin-bottom: 14px;")
-            .append("a")
-            .attr("href",function(d){return d})
-            .text(function(d){return d})      
+        wiersz.append("td")
+        .html(function (d,i) { return d.nazwa })
+
+        wiersz.append("td")
+        .html(function (d,i) { return d.miejscowosc })
+
+        wiersz.append("td")
+        .html(function (d,i) { return d.kategoria })
+
+
+
+        wiersz.append("td")
+        .text(function (d) { return d_format(d_parse(d.data_rozpoczenia)) })
+
+        wiersz.append("td")
+        .html(function (d,i) { return d.opis })
+
+        // wiersz.append("td")
+        // .html(function (d,i) { return d.odnosniki.split("|")})
+
+        wiersz.append("td")
+        .selectAll("a")
+        .data(function(d){return d.odnosniki.split("|")})
+        .enter()
+        .append("a")
+        .attr("href",function(d){return d})
+        .attr("target","_blank")
+        .attr("rel", "noopener noreferrer")
+        .text(function(d,i){return 'odnośnik_'+(i+1)+'.'})
+        .append("br")
+
+
+        // sprawy.append("div")
+        //     .attr("class","column")
+        //     .selectAll("p")
+        //     .data(function(d){return d.odnosniki.split("|")})
+        //     .enter()
+        //     .append("p")
+        //     .attr("style", "font-size: 14px; margin-bottom: 14px;")
+        //     .append("a")
+        //     .attr("href",function(d){return d})
+        //     .text(function(d){return d})      
 
 
             // split d.odnosniki by |
