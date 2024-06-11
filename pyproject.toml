@@ -14,6 +14,7 @@ flask-migrate = "^4.0.5"
 spoldzielnie = {path = "pkgs/spoldzielnie", develop = true}
 pandas = "^2.2.1"
 odfpy = "^1.4.1"
+zipp = "^3.19.2"
 
 
 [build-system]
