@@ -93,7 +93,7 @@ def spoldzielnie_dane():
 
         S.append({
             'krs': s.krs,
-            'bilans': w.bilans,
+            'bilans': w.bilans if w else 'Brak danych',
             'nazwa': s.nazwa,
             'szerokosc_geo': s.szerokosc_geo,
             'dlugosc_geo': s.dlugosc_geo,

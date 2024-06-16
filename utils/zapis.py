@@ -54,7 +54,7 @@ def load_sprawy():
 def load_spoldzielnie():
     with app.app_context():
 
-        df = pd.read_excel('../pkgs/spoldzielnie/spoldzielnie/dane/spoldzielnie_3.ods',dtype=str, header=0)
+        df = pd.read_excel('../pkgs/spoldzielnie/src/spoldzielnie/dane/spoldzielnie.ods',dtype=str, header=0)
 
 
 
@@ -132,5 +132,5 @@ def load_walne():
 if __name__ == "__main__":
     print('ehlo')
     #load_walne()
-    #load_spoldzielnie()
-    load_sprawy()
+    load_spoldzielnie()
+    #load_sprawy()
