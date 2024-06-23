@@ -36,7 +36,7 @@
     var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojson') }}")
     var warszawa_dzielnice = d3.json("{{ url_for('static', filename='dzielnice/warszawa-dzielnice.geojson') }}")
     var wisla = d3.json("{{ url_for('static', filename='dzielnice/wisla.geojson') }}")
-
+    var warszawa_drogi = d3.json("{{ url_for('static', filename='dzielnice/warszawa_drogi.geojson') }}")
     // var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
 
 
@@ -51,24 +51,30 @@
     // change formatMoney to separate thousands with space
     var formatMoney = d3.formatMoney = function (d) { return d3.format(",.2f")(d) + " zł"; }
 
-    Promise.all([warszawa, wisla, spol, gw_svg, sprawy, warszawa_dzielnice]).then(function(values){   
+    Promise.all([warszawa, 
+                 wisla, 
+                 spol, 
+                 warszawa_dzielnice, 
+                 warszawa_drogi]).then(function([warszawa, 
+                                                wisla, 
+                                                spol, 
+                                                warszawa_dzielnice, 
+                                                warszawa_drogi]){   
   
-        console.log(values[2]);
-        // logo
 
-        // sort values[2] by bilans descending
-        values[2].sort(function(a, b) {
+        // sort spol by bilans descending
+        spol.sort(function(a, b) {
             return b.bilans - a.bilans;
         });
 
         // d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
 
-        values[0].features.forEach(function(feature) {
+        warszawa.features.forEach(function(feature) {
            feature.geometry.coordinates[0].reverse();
         });
 
         svg.selectAll("path.continent")
-            .data(values[0].features)
+            .data(warszawa.features)
             .enter()
             .append("path")
             .attr("class","continent")
@@ -96,7 +102,7 @@
             .attr('stop-color', 'rgb(230, 199, 96)')
             .attr('stop-opacity', 1);
 
-        values[5].features.forEach(function(feature) {
+        warszawa_dzielnice.features.forEach(function(feature) {
             feature.geometry.coordinates.forEach(function(coords) {
                 coords.forEach(function(coord) {
                     coord.reverse();
@@ -104,24 +110,46 @@
             });
 
         });
+
+
   
-            svg.selectAll("path.dzielnice")
-            .data(values[5].features)
-            .enter()
-            .append("path")
-            .attr("class","dzielnice")
-            .attr("d", path);
 
 
-            svg.selectAll("path.wisla")
-            .data(values[1].features)
-            .enter()
-            .append("path")
-            .attr("class","wisla")
-            .attr("d", path);
+        svg.selectAll("path.drogi")
+        .data(warszawa_drogi.features)
+        .enter()
+        .append("path")
+        .attr("class","drogi")
+        .attr("d", path);
+
+
+        svg.selectAll("path.wisla")
+        .data(wisla.features)
+        .enter()
+        .append("path")
+        .attr("class","wisla")
+        .attr("d", path);
+
+        svg.selectAll("path.dzielnice")
+        .data(warszawa_dzielnice.features)
+        .enter()
+        .append("path")
+        .attr("class","dzielnice")
+        .attr("d", path);
+
+        // warszawa_drogi.features.forEach(function(feature) {
+        //     feature.geometry.coordinates.forEach(function(coords) {
+        //         coords.forEach(function(coord) {
+        //             coord.reverse();
+        //         });
+        //     });
+
+        // });
+  
+
 
         let g_spol = svg.selectAll("g.spoldzielnia")
-        .data(values[2])
+        .data(spol)
         .enter()
         .append("g")
         .attr("class","spoldzielnia")
@@ -131,13 +159,13 @@
 
 
 
-        values[2] = values[2].map(function(d) {
+        spol = spol.map(function(d) {
             d.bilans_rsquare = Math.sqrt(parseFloat(d.bilans)) // Replace "value" with the value you want to assign to the new attribute
             return d;
         });
 
-        const max_bilans = d3.max(values[2], function(d) { return d.bilans_rsquare; })
-        const min_bilans = d3.min(values[2], function(d) { return d.bilans_rsquare; })
+        const max_bilans = d3.max(spol, function(d) { return d.bilans_rsquare; })
+        const min_bilans = d3.min(spol, function(d) { return d.bilans_rsquare; })
 
         console.log(max_bilans);
         console.log(min_bilans);
@@ -180,28 +208,28 @@
 
 
 
-    g_legenda.append("circle")
-        .attr("class","spoldzielnia")
-        .attr("cx", 0)
-        .attr("cy", 0)
-        .attr("r", "8px")
-        .attr("fill", 'rgb(147, 230, 255)')
-        .attr("stroke", "black")
-        .attr("stroke-width", 1)
+    // g_legenda.append("circle")
+    //     .attr("class","spoldzielnia")
+    //     .attr("cx", 0)
+    //     .attr("cy", 0)
+    //     .attr("r", "8px")
+    //     .attr("fill", 'rgb(147, 230, 255)')
+    //     .attr("stroke", "black")
+    //     .attr("stroke-width", 1)
 
-        g_legenda.append("text")
-        .attr('x', 20)
-        .attr('y', 4)
-        .text("- spółdzielnia mieszkaniowa (SM)")
-
-
+    //     g_legenda.append("text")
+    //     .attr('x', 20)
+    //     .attr('y', 4)
+    //     .text("- spółdzielnia mieszkaniowa (SM)")
 
 
 
-        let dane_w = pogrupuj(values[2]);
+
+
+        let dane_w = pogrupuj(spol);
         console.log(dane_w);
 
-        let suma_wszystkich = d3.sum(values[2], function(d) { return d.bilans; });
+        let suma_wszystkich = d3.sum(spol, function(d) { return d.bilans; });
         console.log(suma_wszystkich);
 
         let wyk = daj_mi_wykres(dane_w, 'Rys. Suma bilansów SM za rok 2022, wg dzielnic.');
@@ -210,7 +238,7 @@
 
         d3.select("div#chart2").node().appendChild(wyk);
 
-        let dane_w2 = pogrupuj2(values[2]);
+        let dane_w2 = pogrupuj2(spol);
         let wyk2 = daj_mi_wykres(dane_w2, 'Rys. Liczba SM według dzielnic.');
 
             console.log(wyk2);
