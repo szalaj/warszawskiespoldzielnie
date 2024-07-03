@@ -35,16 +35,12 @@ export function pogrupuj2(dane) {
 }
 
 export function daj_mi_wykres(dane, caption) {
-    console.log('d')
-    console.log 
+
     //count of keys in dane
     let c = dane.size;
 
     //intermap length
 
-
-    console.log('c')
-    console.log(c)
 
 
     const y_s = 60;
@@ -58,7 +54,9 @@ export function daj_mi_wykres(dane, caption) {
     let cz = d3.create('svg')
     .attr('width', 460)
     .attr('height', 500)
+    .attr('class', 'cell')
     .style("background","#fffaaf");
+
 
     cz.append('text')
     .attr('x', 15)
@@ -118,5 +116,102 @@ export function daj_mi_wykres(dane, caption) {
     .attr('y', (d, i) => i * 20+y_s+10)
     .text((d) => d[0])
 
+    return cz.node();
+}
+
+export function wykres_dzielnica(warszawa_dzielnice, dzielnica, spoldzielnie, warszawa_drogi) {
+
+ 
+
+    const y_s = 60;
+    const x_s = 140;
+
+    const marg = 10;
+    const height = 400
+
+    var w = 300;
+    var h = 300;
+
+    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    // Calculate the inner width and height (subtracting margins)
+const innerWidth = w - margin.left - margin.right;
+const innerHeight = h - margin.top - margin.bottom;
+
+    // const dzielnie = d3.group(dane, (d) => d.dzielnica);
+    let cz = d3.create('svg')
+    .attr('width', w)
+    .attr('height', h)
+    .style("background","#fffaaf");
+    
+    const g = cz.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const featureDzielnica = warszawa_dzielnice.features.find(feature => feature.properties.name === dzielnica);
+
+    const spoldzielnieDzielnica = spoldzielnie.filter(feature => feature.dzielnica === dzielnica);
+
+    // console.log(spoldzielnieDzielnica);
+
+    const projection = d3.geoMercator()
+    .fitSize([innerWidth, innerHeight], featureDzielnica); // Automatically adjust the projection to fit the SVG
+
+    // Create a path generator using the projection
+    const path_proj = d3.geoPath()
+        .projection(projection);
+
+
+
+  // Now, when you draw the "Rembertów" feature, it should fill the SVG dimensions
+  g.selectAll("path.continent")
+    .data([featureDzielnica]) // Directly use the "Rembertów" feature
+    .enter()
+    .append("path")
+    .attr("class", "continent")
+    .attr("d", path_proj);
+
+
+    let g_drogi = cz.append("g").attr("class", "drogi");
+
+        g_drogi
+            .selectAll("path.drogi")
+            .data(warszawa_drogi.features)
+            .enter().append("path")
+            .attr("class", "drogi")
+            .attr("d", path_proj)
+            .attr("fill", "none")
+            .attr("stroke", "white");
+
+
+    let g_spol = cz.selectAll("g.spoldzielnia")
+    .data(spoldzielnieDzielnica)
+    .enter()
+    .append("g")
+    .attr("class", "spoldzielnia")
+    .attr("transform", function (d) {
+        return "translate(" + projection([d.dlugosc_geo, d.szerokosc_geo]) + ")"
+    })
+
+    g_spol
+    .append("circle")
+    .attr("class", "spoldzielnia")
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", function (d) {
+        let rr = 0
+        // if (d.bilans_rsquare > 0) {
+        //    rr = d.bilans_rsquare
+        // } 
+        // return r_bilans(rr)
+        return 4;
+    }
+    )
+    .attr("fill", function (d) {
+        return 'rgb(147, 230, 255)'
+
+    })
+    .attr("stroke", "black")
+    .attr("stroke-width", 1)
+    .attr("opacity", 0.7)
+    
     return cz.node();
 }
