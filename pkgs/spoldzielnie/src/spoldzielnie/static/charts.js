@@ -50,6 +50,8 @@ export function daj_mi_wykres(dane, caption) {
     const height = c * marg-20;
 
 
+
+
     // const dzielnie = d3.group(dane, (d) => d.dzielnica);
     let cz = d3.create('svg')
     .attr('width', 460)
@@ -130,9 +132,9 @@ export function wykres_dzielnica(warszawa_dzielnice, dzielnica, spoldzielnie, wa
     const height = 400
 
     var w = 300;
-    var h = 300;
+    var h = 350;
 
-    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    const margin = { top: 20, right: 20, bottom: 70, left: 20 };
     // Calculate the inner width and height (subtracting margins)
 const innerWidth = w - margin.left - margin.right;
 const innerHeight = h - margin.top - margin.bottom;
@@ -162,11 +164,11 @@ const innerHeight = h - margin.top - margin.bottom;
 
 
   // Now, when you draw the "Rembertów" feature, it should fill the SVG dimensions
-  g.selectAll("path.continent")
+  g.selectAll("path.dzielnica")
     .data([featureDzielnica]) // Directly use the "Rembertów" feature
     .enter()
     .append("path")
-    .attr("class", "continent")
+    .attr("class", "dzielnica")
     .attr("d", path_proj);
 
 
@@ -212,6 +214,19 @@ const innerHeight = h - margin.top - margin.bottom;
     .attr("stroke", "black")
     .attr("stroke-width", 1)
     .attr("opacity", 0.7)
+
+
+
+    cz.append('text')
+    .attr('x', w / 2)
+    .attr('y', 320)
+    .text(dzielnica.toUpperCase())
+    .style('font-size', '20px')
+    .style('fill', 'black')
+    .style('font-family', 'Ubuntu')
+    .style('font-weight', 'bold')
+    .attr("text-anchor", "middle");
+
     
     return cz.node();
 }
