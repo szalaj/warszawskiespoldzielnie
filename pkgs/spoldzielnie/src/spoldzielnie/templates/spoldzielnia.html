@@ -72,6 +72,9 @@ var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojso
             if (d.bilans == "NaN" || d.bilans == "nan" || d.bilans==0 || d.bilans == "" || d.bilans == null) {
                 return "brak danych";
             }
+            else if (d.bilans == "do sprawdzenia") {
+              return "do sprawdzenia";
+            }
             else{
                 return formatMoney(d.bilans);
             }             
@@ -81,36 +84,36 @@ var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojso
 
         // d3.selectAll("tbody").append("tr","tr")
 
-        const formatTime = d3.utcFormat("%Y-%m-%d");
+        // const formatTime = d3.utcFormat("%Y-%m-%d");
 
-        values[4].forEach(function(sprawa) {
+        // values[4].forEach(function(sprawa) {
            
 
 
-            var x = document.getElementById(sprawa.spoldzielnia);
-            let t = document.createElement('tr');
-            x.parentNode.insertBefore(t, x.nextSibling);  
+        //     var x = document.getElementById(sprawa.spoldzielnia);
+        //     let t = document.createElement('tr');
+        //     x.parentNode.insertBefore(t, x.nextSibling);  
 
-            // get string from date object sprawa.data_rozpoczenia
-            let data_rozpoczenia = formatTime(new Date(sprawa.data_rozpoczenia));
+        //     // get string from date object sprawa.data_rozpoczenia
+        //     let data_rozpoczenia = formatTime(new Date(sprawa.data_rozpoczenia));
 
-            let ih = "<td></td><td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td><td></td>"
+        //     let ih = "<td></td><td>&#9733; "+sprawa.kategoria+"</td><td>("+data_rozpoczenia+") "+sprawa.opis+"</td><td></td>"
 
             
 
-              t.ih += "<td>"
+        //       t.ih += "<td>"
             
-            let odnosniki = sprawa.odnosniki.split("|");
-            odnosniki.forEach(function(odnosnik) {
-                ih += "<a href='"+odnosnik+"'>"+odnosnik+"</a><br><br>"
+        //     let odnosniki = sprawa.odnosniki.split("|");
+        //     odnosniki.forEach(function(odnosnik) {
+        //         ih += "<a href='"+odnosnik+"'>"+odnosnik+"</a><br><br>"
               
-            });
-            ih += "</td>"
+        //     });
+        //     ih += "</td>"
 
-            t.innerHTML = ih;
+        //     t.innerHTML = ih;
   
     
-        })
+        // })
 
     })
 

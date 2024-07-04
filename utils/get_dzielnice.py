@@ -6,10 +6,10 @@ import requests
 import pandas as pd
 
 
-df = pd.read_excel('../pkgs/spoldzielnie/spoldzielnie/dane/spoldzielnie_3.ods',dtype=str, header=0)
+df = pd.read_excel('../pkgs/spoldzielnie/src/spoldzielnie/dane/spoldzielnie_check_new.ods',dtype=str, header=0)
 
         #print(df.head())
-with open("../pkgs/spoldzielnie/spoldzielnie/dane/spoldzielnie_dzielnice.csv", "w") as f:
+with open("../pkgs/spoldzielnie/src/spoldzielnie/dane/spoldzielnie_dzielnice2.csv", "w") as f:
     for index, row in df.iterrows():
         krs = row['krs']
         szer = row['szerokosc_geo']
