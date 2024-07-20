@@ -165,9 +165,6 @@ export function wykres_dzielnica(warszawa_dzielnice, dzielnica, spoldzielnie, wa
 
 
 
-
-
-
     let g_drogi = cz.append("g").attr("class", "drogi").attr("transform", `translate(${margin.left},${margin.top})`);
 
     g_drogi
