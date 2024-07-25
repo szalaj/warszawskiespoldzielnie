@@ -17,7 +17,7 @@ with open('../pkgs/spoldzielnie/src/spoldzielnie/dane/spoldzielnie_krs_dane3.csv
         if i !=0:
             print(krs)
             rejestr = 'P'
-            x = requests.get(f"https://api-krs.ms.gov.pl/api/krs/OdpisAktualny/{krs}?rejestr={rejestr}&format=json")
+            x = requests.get(f"https://api-krs.ms.gov.pl/api/krs/OdpisPelny/{krs}?rejestr={rejestr}&format=json")
             print(x.status_code)
             if x.status_code == 200:
                 print(x)

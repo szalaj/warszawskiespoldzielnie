@@ -181,12 +181,12 @@ export function wykres_dzielnica(warszawa_dzielnice, dzielnica, spoldzielnie, wa
         .attr("transform", `translate(${margin.left},${margin.top})`);
     
 
-        g_dziel.selectAll("path.dzielnica")
-    .data([featureDzielnica]) 
-    .enter()
-    .append("path")
-    .attr("class", "dzielnica")
-    .attr("d", sciezka_proj);
+    g_dziel.selectAll("path.dzielnica")
+        .data([featureDzielnica]) 
+        .enter()
+        .append("path")
+        .attr("class", "dzielnica")
+        .attr("d", sciezka_proj);
 
 
 
