@@ -293,17 +293,17 @@
 
 
 
-            // let dane_w = pogrupuj(spol);
-            // let suma_wszystkich = d3.sum(spol, function (d) { return d.bilans; });
-            // let wyk = daj_mi_wykres(dane_w, 'Rys. Suma bilansów SM za rok 2022, wg dzielnic.');
+            let dane_w = pogrupuj(spol);
+            let suma_wszystkich = d3.sum(spol, function (d) { return d.bilans; });
+            let wyk = daj_mi_wykres(dane_w, 'Rys. Suma bilansów SM za rok 2022, wg dzielnic.');
 
 
 
-            // d3.select("div#chart2").node().appendChild(wyk);
-            // let dane_w2 = pogrupuj2(spol);
-            // let wyk2 = daj_mi_wykres(dane_w2, 'Rys. Liczba SM według dzielnic.');
+            d3.select("div#chart2").node().appendChild(wyk);
+            let dane_w2 = pogrupuj2(spol);
+            let wyk2 = daj_mi_wykres(dane_w2, 'Rys. Liczba SM według dzielnic.');
 
-            // d3.select("div#chart3").node().appendChild(wyk2);
+            d3.select("div#chart3").node().appendChild(wyk2);
 
         });
 

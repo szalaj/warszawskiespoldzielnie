@@ -71,22 +71,16 @@ class Walne(db.Model):
 
     spoldzielnia = db.Column(db.String, db.ForeignKey("spoldzielnia.krs"), nullable=False)
 
-    sprawozdanie_finansowe = db.Column(db.Boolean)
+    rok = db.Column(db.Integer)
+
     uchwala_zatw = db.Column(db.Boolean)
 
 
     kiedy_bylo = db.Column(db.DateTime())
 
-    w_sprawie = db.Column(db.String)
+
 
     bilans = db.Column(db.Float)
-
-
-    glosowanie_za = db.Column(db.Integer)
-    glosowanie_przeciw = db.Column(db.Integer)
-    glosowanie_wstrzymujacy = db.Column(db.Integer)
-    glosowanie_niewazne = db.Column(db.Integer)
-
 
     uwagi = db.Column(db.String)
 
@@ -96,8 +90,7 @@ class Walne(db.Model):
         return f"{self.spoldzielnia} - {self.bilans}"
     
     def as_dict(self):
-        return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'sprawozdanie_finansowe': self.sprawozdanie_finansowe, 'uchwala_zatw': self.uchwala_zatw, 'kiedy_bylo': self.kiedy_bylo, 'w_sprawie': self.w_sprawie, 'bilans': self.bilans, 'glosowanie_za': self.glosowanie_za, 'glosowanie_przeciw': self.glosowanie_przeciw, 'glosowanie_wstrzymujacy': self.glosowanie_wstrzymujacy, 'glosowanie_niewazne': self.glosowanie_niewazne, 'uwagi': self.uwagi}
-    
+        return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'uchwala_zatw': self.uchwala_zatw, 'kiedy_bylo': self.kiedy_bylo, 'bilans': self.bilans, 'uwagi': self.uwagi}
 
 class Organizacja(db.Model):
     __tablename__ = 'organizacja'

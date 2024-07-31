@@ -87,29 +87,31 @@ def spoldzielnie_dane():
         Walne, Walne.spoldzielnia == Spoldzielnia.krs, 
         isouter=True).all()
 
-
+    
     S=[]
     for s, w in result:
 
-        S.append({
-            'krs': s.krs,
-            'bilans': w.bilans if w else 'do sprawdzenia',
-            'nazwa': s.nazwa,
-            'szerokosc_geo': s.szerokosc_geo,
-            'dlugosc_geo': s.dlugosc_geo,
-            'kod_pocztowy': s.kod_pocztowy,
-            'miejscowosc': s.miejscowosc,
-            'dzielnica': s.dzielnica,
-            'forma_prawna': s.forma_prawna,
-            'data_rejestracji': s.data_rejestracji,
-            'status': s.status,
-            'nip': s.nip,
-            'regon': s.regon,
-            'adres': s.adres,
+        if w.rok == 2022:
 
-        }
-            
-        )
+            S.append({
+                'krs': s.krs,
+                'bilans': w.bilans if w else 'do sprawdzenia',
+                'nazwa': s.nazwa,
+                'szerokosc_geo': s.szerokosc_geo,
+                'dlugosc_geo': s.dlugosc_geo,
+                'kod_pocztowy': s.kod_pocztowy,
+                'miejscowosc': s.miejscowosc,
+                'dzielnica': s.dzielnica,
+                'forma_prawna': s.forma_prawna,
+                'data_rejestracji': s.data_rejestracji,
+                'status': s.status,
+                'nip': s.nip,
+                'regon': s.regon,
+                'adres': s.adres,
+
+            }
+                
+            )
 
 
     #S = Spoldzielnia.query.order_by(Spoldzielnia.nazwa).all()

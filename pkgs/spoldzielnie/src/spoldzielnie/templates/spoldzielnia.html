@@ -46,9 +46,12 @@ var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojso
         let tabela = d3.select("table")
 
         let wiersz = tabela.append("tbody")
-        .selectAll("tr").data(values[2])
-        .enter().append("tr").attr("id", function(d) {return d.krs})
-        .attr('class', 'spoldzielnia')
+                      .selectAll("tr")
+                      .data(values[2])
+                      .enter()
+                      .append("tr")
+                      .attr("id", function(d) {return d.krs})
+                      .attr('class', 'spoldzielnia')
 
 
         wiersz.append("td")

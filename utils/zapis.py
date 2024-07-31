@@ -59,8 +59,6 @@ def load_spoldzielnie():
         df = pd.read_excel( os.path.join(current_path, 'pkgs/spoldzielnie/src/spoldzielnie/dane/spoldzielnie.ods'),dtype=str, header=0)
 
 
-
-
         for index, row in df.iterrows():
             krs = row['krs']
             zera = 10 - len(str(krs))
@@ -112,12 +110,11 @@ def load_walne():
                     # raise ValueError(value)
 
 
-            sprawozdanie_value = tak_nie(row['sprawozdanie_finansowe'])
             uchwala_zatw_value = tak_nie(row['uchwala_zatw'])
 
             d = Walne(
                 spoldzielnia = krs,
-                sprawozdanie_finansowe = sprawozdanie_value,
+                rok = int(row['rok_kalendarzowy']),
                 uchwala_zatw = uchwala_zatw_value,
                 kiedy_bylo = None if pd.isna(row['kiedy_bylo']) else datetime.datetime.strptime(row['kiedy_bylo'], '%d-%m-%Y'),
                 bilans = row['bilans'],
