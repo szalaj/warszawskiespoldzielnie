@@ -131,6 +131,6 @@ def load_walne():
 
 if __name__ == "__main__":
     print('ehlo')
-    load_walne()
+    # load_walne()
     # load_spoldzielnie()
-    # load_sprawy()
+    load_sprawy()
