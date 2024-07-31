@@ -136,8 +136,8 @@ export function wykres_dzielnica(warszawa_dzielnice, dzielnica, spoldzielnie, wa
 
     const margin = { top: 20, right: 20, bottom: 70, left: 20 };
     // Calculate the inner width and height (subtracting margins)
-const innerWidth = w - margin.left - margin.right;
-const innerHeight = h - margin.top - margin.bottom;
+    const innerWidth = w - margin.left - margin.right;
+    const innerHeight = h - margin.top - margin.bottom;
 
     // const dzielnie = d3.group(dane, (d) => d.dzielnica);
     let cz = d3.create('svg')
@@ -145,8 +145,6 @@ const innerHeight = h - margin.top - margin.bottom;
     .attr('height', h)
     .style("background","#fffaaf");
     
-    const g = cz.append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const featureDzielnica = warszawa_dzielnice.features.find(feature => feature.properties.name === dzielnica);
 
@@ -154,44 +152,56 @@ const innerHeight = h - margin.top - margin.bottom;
 
     // console.log(spoldzielnieDzielnica);
 
-    const projection = d3.geoMercator()
+    // const projekcja = d3.geoMercator().translate([w / 2 - 100, h / 2 + 570]).scale(86000).center([21, 52]);
+
+    const projekcja = d3.geoMercator()
     .fitSize([innerWidth, innerHeight], featureDzielnica); // Automatically adjust the projection to fit the SVG
 
     // Create a path generator using the projection
-    const path_proj = d3.geoPath()
-        .projection(projection);
+    const sciezka_proj = d3.geoPath()
+        .projection(projekcja);
 
 
 
-  // Now, when you draw the "Rembertów" feature, it should fill the SVG dimensions
-  g.selectAll("path.dzielnica")
-    .data([featureDzielnica]) // Directly use the "Rembertów" feature
-    .enter()
-    .append("path")
-    .attr("class", "dzielnica")
-    .attr("d", path_proj);
 
 
-    let g_drogi = cz.append("g").attr("class", "drogi");
+    let g_drogi = cz.append("g").attr("class", "drogi").attr("transform", `translate(${margin.left},${margin.top})`);
 
-        g_drogi
-            .selectAll("path.drogi")
-            .data(warszawa_drogi.features)
-            .enter().append("path")
-            .attr("class", "drogi")
-            .attr("d", path_proj)
-            .attr("fill", "none")
-            .attr("stroke", "white");
+    g_drogi
+        .selectAll("path.drogi")
+        .data(warszawa_drogi.features)
+        .enter()
+        .append("path")
+        .attr("class", "drogi")
+        .attr("d", sciezka_proj)
+        .attr("fill", "none")
+        .attr("stroke", "white");
+
+        const g_dziel = cz.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+
+    g_dziel.selectAll("path.dzielnica")
+        .data([featureDzielnica]) 
+        .enter()
+        .append("path")
+        .attr("class", "dzielnica")
+        .attr("d", sciezka_proj);
 
 
-    let g_spol = cz.selectAll("g.spoldzielnia")
+
+    let g_spol_layer = cz.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    
+    let g_spol = g_spol_layer.selectAll("g.spoldzielnia")
     .data(spoldzielnieDzielnica)
     .enter()
     .append("g")
     .attr("class", "spoldzielnia")
     .attr("transform", function (d) {
-        return "translate(" + projection([d.dlugosc_geo, d.szerokosc_geo]) + ")"
+        return "translate(" + projekcja([d.dlugosc_geo, d.szerokosc_geo]) + ")"
     })
+
 
     g_spol
     .append("circle")
@@ -213,7 +223,24 @@ const innerHeight = h - margin.top - margin.bottom;
     })
     .attr("stroke", "black")
     .attr("stroke-width", 1)
-    .attr("opacity", 0.7)
+    .attr("opacity", 0.7);
+
+    // g_spol.on("mouseover", function(event, d) {
+    //     // Your code to handle the mouseover event goes here
+    //     // 'd' is the data bound to the element, if any
+    //     // 'this' or 'event.currentTarget' refers to the g_spol element that triggered the event
+    //     console.log("Mouseover event on g_spol", d);
+    // });
+
+
+    cz.append('rect')
+    .attr('x', 0)
+    .attr('y', 295)
+    .attr('width', w)
+    .attr('height', 40)
+    .style('fill', '#fffaff');
+
+
 
 
 
@@ -221,12 +248,21 @@ const innerHeight = h - margin.top - margin.bottom;
     .attr('x', w / 2)
     .attr('y', 320)
     .text(dzielnica.toUpperCase())
+    .attr('class', 'dziel')
     .style('font-size', '20px')
     .style('fill', 'black')
     .style('font-family', 'Ubuntu')
     .style('font-weight', 'bold')
     .attr("text-anchor", "middle");
 
-    
+    cz.append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', w)
+    .attr('height', h)
+    .style('fill', 'none')
+    .style('stroke', '#d76050')
+    .style('stroke-width', 2);
+
     return cz.node();
 }

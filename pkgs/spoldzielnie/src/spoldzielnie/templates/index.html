@@ -120,16 +120,16 @@
 
             // d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
 
-            warszawa.features.forEach(function (feature) {
-                feature.geometry.coordinates[0].reverse();
-            });
+            // warszawa.features.forEach(function (feature) {
+            //     feature.geometry.coordinates[0].reverse();
+            // });
 
-            svg.selectAll("path.continent")
-                .data(warszawa.features)
-                .enter()
-                .append("path")
-                .attr("class", "continent")
-                .attr("d", path_proj);
+            // svg.selectAll("path.continent")
+            //     .data(warszawa.features)
+            //     .enter()
+            //     .append("path")
+            //     .attr("class", "continent")
+            //     .attr("d", path_proj);
 
 
 
@@ -144,14 +144,14 @@
             gradient.append('stop')
                 .attr('class', 'start')
                 .attr('offset', '0%')
-                .attr('stop-color', '#fa8b8b')
-                .attr('stop-opacity', 0.7);
+                .attr('stop-color', '#ca554a')
+                .attr('stop-opacity', 0.0);
 
             gradient.append('stop')
                 .attr('class', 'end')
                 .attr('offset', '100%')
-                .attr('stop-color', 'rgb(230, 199, 96)')
-                .attr('stop-opacity', 1);
+                .attr('stop-color', '#cada14')
+                .attr('stop-opacity', 0);
 
             // dzielnice = ["Bemowo", "Białołęka", "Bielany", "Mokotów", "Ochota", "Praga-Południe", "Praga-Północ", "Rembertów", "Śródmieście", "Targówek", "Ursus", "Ursynów", "Wawer", "Wesoła", "Wilanów", "Włochy", "Wola", "Żoliborz"];
 
@@ -184,18 +184,20 @@
                 .attr("d", path_proj);
 
 
-            svg.selectAll("path.wisla")
-                .data(wisla.features)
-                .enter()
-                .append("path")
-                .attr("class", "wisla")
-                .attr("d", path_proj);
+
 
             svg.selectAll("path.dzielnice")
                 .data(warszawa_dzielnice.features)
                 .enter()
                 .append("path")
                 .attr("class", "dzielnice")
+                .attr("d", path_proj);
+
+                svg.selectAll("path.wisla")
+                .data(wisla.features)
+                .enter()
+                .append("path")
+                .attr("class", "wisla")
                 .attr("d", path_proj);
 
             // warszawa_drogi.features.forEach(function(feature) {
@@ -272,10 +274,18 @@
                 .attr("stroke-width", 1)
                 .attr("opacity", 0.7)
 
-
+                svg.append('rect')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', w)
+                .attr('height', h)
+                .style('fill', 'none')
+                .style('stroke', '#d76050')
+                .style('stroke-width', 2);
 
             dzielniceWarszawy.forEach(function (dzielnica) {
-                d3.select("div#dzielnimapki").append("div").attr("class", "cell").node().appendChild(wykres_dzielnica(
+                d3.select("div#dzielnimapki").append("div").attr("class", "cell").node().appendChild(
+                    wykres_dzielnica(
                     warszawa_dzielnice,
                     dzielnica, spol,
                     warszawa_drogi));

@@ -24,7 +24,9 @@ app=init_app()
 def load_sprawy():
     with app.app_context():
 
-        df = pd.read_excel('../pkgs/spoldzielnie/src/spoldzielnie/dane/sprawy.ods',dtype=str, header=0)
+        file_path = os.path.join(current_path, 'pkgs/spoldzielnie/src/spoldzielnie/dane/sprawy.ods')
+
+        df = pd.read_excel(file_path,dtype=str, header=0)
 
         #print(df.head())
 
@@ -54,8 +56,7 @@ def load_sprawy():
 def load_spoldzielnie():
     with app.app_context():
 
-        df = pd.read_excel('../pkgs/spoldzielnie/src/spoldzielnie/dane/spoldzielnie.ods',dtype=str, header=0)
-
+        df = pd.read_excel( os.path.join(current_path, 'pkgs/spoldzielnie/src/spoldzielnie/dane/spoldzielnie.ods'),dtype=str, header=0)
 
 
         for index, row in df.iterrows():
@@ -84,7 +85,9 @@ def load_spoldzielnie():
 def load_walne():
     with app.app_context():
 
-        df = pd.read_excel('../pkgs/spoldzielnie/spoldzielnie/dane/walne.ods',dtype=str, header=0)
+        file_path = os.path.join(current_path, 'pkgs/spoldzielnie/src/spoldzielnie/dane/walne.ods')
+
+        df = pd.read_excel(file_path,dtype=str, header=0)
 
 
 
@@ -95,29 +98,26 @@ def load_walne():
             krs = '0'*zera + str(krs)     
 
             def tak_nie(value):
+                if pd.isna(value):
+                    return None
                 value = value.strip().lower()
                 if value == 'tak':
                     return True
                 elif value == 'nie':
                     return False
                 else:
-                    raise ValueError(value)
+                    return None
+                    # raise ValueError(value)
 
 
-            sprawozdanie_value = tak_nie(row['sprawozdanie_finansowe'])
             uchwala_zatw_value = tak_nie(row['uchwala_zatw'])
 
             d = Walne(
                 spoldzielnia = krs,
-                sprawozdanie_finansowe = sprawozdanie_value,
+                rok = int(row['rok_kalendarzowy']),
                 uchwala_zatw = uchwala_zatw_value,
                 kiedy_bylo = None if pd.isna(row['kiedy_bylo']) else datetime.datetime.strptime(row['kiedy_bylo'], '%d-%m-%Y'),
-                w_sprawie = row['w_sprawie'],
                 bilans = row['bilans'],
-                glosowanie_za = row['za'],
-                glosowanie_przeciw = row['przeciw'],
-                glosowanie_wstrzymujacy = row['wstrzymujacy'],
-                glosowanie_niewazne = row['niewazne'],
                 uwagi = row['uwagi']
 
             )
@@ -131,6 +131,6 @@ def load_walne():
 
 if __name__ == "__main__":
     print('ehlo')
-    #load_walne()
-    load_spoldzielnie()
-    #load_sprawy()
+    # load_walne()
+    # load_spoldzielnie()
+    load_sprawy()

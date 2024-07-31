@@ -7,7 +7,7 @@
           <tr>
             <th>lp</th>
             <th>nazwa</th>
-            <th>miejscowosc</th>
+            <th>miejscowość</th>
             <th>kategoria</th>
             <th>data początkowa</th>
             <th>opis</th>
@@ -41,7 +41,13 @@
     Promise.all([ artykuly]).then(function([artykuly]){  
 
 
-        console.log(artykuly);
+
+            // Sort artykuly by data_poczatkowa
+         artykuly =    artykuly.sort(function(a, b) {
+    return new Date(d_parse(b.data_rozpoczenia)) - new Date(d_parse(a.data_rozpoczenia));
+});
+
+console.log(artykuly);
 
         let tabela = d3.select("table")
 
