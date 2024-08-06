@@ -31,7 +31,7 @@ def load_sprawy():
         #print(df.head())
 
         for index, row in df.iterrows():
-            krs = row['spoldzielnia_krs']
+            krs = row['spoldzielnia_krs'] if not pd.isna(row['spoldzielnia_krs']) else 0
             zera = 10 - len(str(krs))
             krs = '0'*zera + str(krs)
             print(krs)
@@ -44,7 +44,8 @@ def load_sprawy():
                 opis=row['opis'],
                 status=row['status'],
                 rozwiazanie=row['rozwiazanie'],
-                kategoria=row['kategoria'],
+                typ = row['typ'],
+                temat=row['temat'],
                 odnosniki=row['odnosniki'],
                 uwagi=row['uwagi'],
                 szerokosc_geo=row['szerokosc_geo'],

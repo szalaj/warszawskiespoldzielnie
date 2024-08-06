@@ -61,9 +61,10 @@ def artykuly_dane():
         S.append({
             'krs': s.krs if s else 'None',
             'nazwa': s.nazwa if s else '',
-            'miejscowosc': s.miejscowosc if s else 'OGÓLNY',
+            'miejscowosc': s.miejscowosc if s else '',
             'data_rozpoczenia': spr.data_rozpoczenia,
-            'kategoria': spr.kategoria,
+            'temat': spr.temat,
+            'typ': spr.typ,
             'opis': spr.opis,
             'status': spr.status,
             'rozwiazanie': spr.rozwiazanie,
