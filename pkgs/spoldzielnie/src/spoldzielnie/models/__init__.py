@@ -29,7 +29,6 @@ class Spoldzielnia(db.Model):
 class Sprawa(db.Model):
     __tablename__ = 'sprawa'
 
-
     nr = db.Column(db.Integer, primary_key=True) 
     data_dodania = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
@@ -44,7 +43,8 @@ class Sprawa(db.Model):
     opis = db.Column(db.String)
     status = db.Column(db.String)
     rozwiazanie = db.Column(db.String)
-    kategoria = db.Column(db.String)
+    temat = db.Column(db.String)
+    typ = db.Column(db.String)
 
     odnosniki = db.Column(db.String)
     uwagi = db.Column(db.String)
@@ -58,7 +58,7 @@ class Sprawa(db.Model):
         return f"{self.spoldzielnia} - {self.opis}"
     
     def as_dict(self):
-        return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'data_rozpoczenia': self.data_rozpoczenia, 'data_zakonczenia': self.data_zakonczenia, 'opis': self.opis, 'status': self.status, 'kategoria': self.kategoria, 'odnosniki': self.odnosniki, 'szerokosc_geo': self.szerokosc_geo, 'dlugosc_geo': self.dlugosc_geo}
+        return {'nr': self.nr, 'spoldzielnia': self.spoldzielnia, 'data_rozpoczenia': self.data_rozpoczenia, 'data_zakonczenia': self.data_zakonczenia, 'opis': self.opis, 'status': self.status, 'typ':self.typ, 'temat': self.temat, 'odnosniki': self.odnosniki, 'szerokosc_geo': self.szerokosc_geo, 'dlugosc_geo': self.dlugosc_geo}
     
 
 class Walne(db.Model):

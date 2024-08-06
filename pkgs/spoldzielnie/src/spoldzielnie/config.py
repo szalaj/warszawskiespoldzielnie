@@ -8,4 +8,4 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SCHEDULER_API_ENABLED = True
     SCHEDULER_TIMEZONE = "Europe/Berlin"
-    MIGRATIONS_DIR = f"{os.getenv('APP_FOLDER')}/spoldzielnie/migrations"
+    MIGRATIONS_DIR = f"{os.getenv('APP_FOLDER')}/src/spoldzielnie/migrations"

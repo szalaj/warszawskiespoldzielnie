@@ -6,13 +6,13 @@
         <thead>
           <tr>
             <th>lp</th>
-            <th>nazwa</th>
-            <th>miejscowość</th>
-            <th>kategoria</th>
-            <th>data początkowa</th>
+            <th>typ</th>
+            <th>temat</th>
+            <th>data</th>
             <th>opis</th>
             <th>odnosniki</th>
-
+            <th>spółdzielnia</th>
+            <th>miejscowość</th>
             
           </tr>
         </thead>
@@ -62,14 +62,12 @@ console.log(artykuly);
         wiersz.append("td")
         .html(function (d,i) { return (i+1)+"." })
 
-        wiersz.append("td")
-        .html(function (d,i) { return d.nazwa })
+
 
         wiersz.append("td")
-        .html(function (d,i) { return d.miejscowosc })
-
+        .html(function (d,i) { return d.typ })
         wiersz.append("td")
-        .html(function (d,i) { return d.kategoria })
+        .html(function (d,i) { return d.temat })
 
 
 
@@ -94,6 +92,11 @@ console.log(artykuly);
         .append("br")
 
 
+        wiersz.append("td")
+        .html(function (d,i) { return d.nazwa })
+
+        wiersz.append("td")
+        .html(function (d,i) { return d.miejscowosc })
         // sprawy.append("div")
         //     .attr("class","column")
         //     .selectAll("p")
