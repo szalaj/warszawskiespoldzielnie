@@ -283,12 +283,33 @@
                 .style('stroke', '#d76050')
                 .style('stroke-width', 2);
 
-            dzielniceWarszawy.forEach(function (dzielnica) {
+                dzielniceWarszawy.forEach(function (dzielnica) {
+
+                var featureDzielnica = warszawa_dzielnice.features.find(feature => feature.properties.name === dzielnica);
+                var spoldzielnieDzielnica = spol.filter(feature => feature.dzielnica === dzielnica);
+
+ 
+                    let roadsWithinAdminUnit = warszawa_drogi.features.filter(function(road) {
+                        return turf.booleanWithin(road, featureDzielnica);
+                    });
+
+                    let dzielnica_drogi = {
+                        type: "FeatureCollection",
+                        features: roadsWithinAdminUnit
+                    };
+
+
+                // console.log(warszawa_drogi)
+
+                // console.log(featureDzielnica.feature)
+
+
                 d3.select("div#dzielnimapki").append("div").attr("class", "cell").node().appendChild(
                     wykres_dzielnica(
-                    warszawa_dzielnice,
-                    dzielnica, spol,
-                    warszawa_drogi));
+                        featureDzielnica,
+                        dzielnica, 
+                        spoldzielnieDzielnica,
+                        dzielnica_drogi));
             });
 
 
