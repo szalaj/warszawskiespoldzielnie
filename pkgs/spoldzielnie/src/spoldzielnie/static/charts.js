@@ -121,7 +121,7 @@ export function daj_mi_wykres(dane, caption) {
     return cz.node();
 }
 
-export function wykres_dzielnica(warszawa_dzielnice, dzielnica, spoldzielnie, warszawa_drogi) {
+export function wykres_dzielnica(featureDzielnica, dzielnica, spoldzielnieDzielnica, dzielnica_drogi) {
 
  
 
@@ -144,11 +144,6 @@ export function wykres_dzielnica(warszawa_dzielnice, dzielnica, spoldzielnie, wa
     .attr('width', w)
     .attr('height', h)
     .style("background","#fffaaf");
-    
-
-    const featureDzielnica = warszawa_dzielnice.features.find(feature => feature.properties.name === dzielnica);
-
-    const spoldzielnieDzielnica = spoldzielnie.filter(feature => feature.dzielnica === dzielnica);
 
     // console.log(spoldzielnieDzielnica);
 
@@ -163,13 +158,15 @@ export function wykres_dzielnica(warszawa_dzielnice, dzielnica, spoldzielnie, wa
 
 
 
+        // console.log(dzielnica_drogi);
+
 
 
     let g_drogi = cz.append("g").attr("class", "drogi").attr("transform", `translate(${margin.left},${margin.top})`);
 
     g_drogi
         .selectAll("path.drogi")
-        .data(warszawa_drogi.features)
+        .data(dzielnica_drogi.features)
         .enter()
         .append("path")
         .attr("class", "drogi")

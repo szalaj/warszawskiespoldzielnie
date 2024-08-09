@@ -2,31 +2,13 @@
 {% block content %}
 
 <section>
-    <div class="container">
-
-
-        <div id="chart"></div>
-
-    </div>
-
-    <div class="container">
-
-        <div class="columns">
-            <div class="column" id="chart2"></div>
-            <div class="column" id="chart3"></div>
-            <div class="column" id="chart4"></div>
-
-        </div>
-    </div>
-    <div class="container">
-        <div class="fixed-grid has-3-cols">
-            <div class="grid"  id="dzielnimapki">
-            </div>
+    <div class="container is-widescreen">
+        <div class="columns is-multiline" id="wszystko">
 
         </div>
     </div>
 
-    <div class="container">
+    <div class="container is-widescreen">
         <br><br>
     </div>
 </section>
@@ -35,7 +17,9 @@
 
     var w = 700;
     var h = 700;
-    var svg = d3.select("div#chart").append("svg").attr("width", w).attr("height", h)
+
+    //d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(
+    var svg = d3.select("div#wszystko").append("div").attr("class", "cell").append("svg").attr("width", w).attr("height", h)
         .attr("viewBox", "0 0 " + w + " " + h).style("background", "#fffaaf");
 
     var projection = d3.geoMercator().translate([w / 2 - 100, h / 2 + 570]).scale(86000).center([21, 52]);
@@ -45,10 +29,7 @@
     var warszawa_dzielnice = d3.json("{{ url_for('static', filename='dzielnice/warszawa-dzielnice.geojson') }}")
     var wisla = d3.json("{{ url_for('static', filename='dzielnice/wisla.geojson') }}")
     var warszawa_drogi = d3.json("{{ url_for('static', filename='dzielnice/warszawa_drogi2ba.geojson') }}")
-    var warszawa_drog_high = d3.json("{{ url_for('static', filename='dzielnice/converted_roads.geojson') }}")
-    // var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
 
-    var warszawa_dzialki = d3.json("{{ url_for('static', filename='dzielnice/dzialki_warszawa.geojson') }}")
 
     var spol = d3.json({{ url_for("common.spoldzielnie_dane") | tojson }})
     var sprawy = d3.json({{ url_for("common.sprawy_dane") | tojson }})
@@ -103,14 +84,12 @@
         wisla,
         spol,
         warszawa_dzielnice,
-        warszawa_drogi,
-        warszawa_dzialki])
+        warszawa_drogi])
         .then(function ([warszawa,
             wisla,
             spol,
             warszawa_dzielnice,
-            warszawa_drogi,
-            warszawa_dzialki]) {
+            warszawa_drogi]) {
 
 
             // sort spol by bilans descending
@@ -171,7 +150,6 @@
 
             });
 
-            console.log(dzielniceWarszawy)
 
 
 
@@ -193,36 +171,12 @@
                 .attr("class", "dzielnice")
                 .attr("d", path_proj);
 
-                svg.selectAll("path.wisla")
+            svg.selectAll("path.wisla")
                 .data(wisla.features)
                 .enter()
                 .append("path")
                 .attr("class", "wisla")
                 .attr("d", path_proj);
-
-            // warszawa_drogi.features.forEach(function(feature) {
-            //     feature.geometry.coordinates.forEach(function(coords) {
-            //         coords.forEach(function(coord) {
-            //             coord.reverse();
-            //         });
-            //     });
-
-            // });
-
-            // warszawa_dzialki.features.forEach(function(feature) {
-            //    feature.geometry.coordinates[0].reverse();
-            // });
-
-            // fixCoordinatesOrder(warszawa_dzialki);
-
-            // svg.selectAll("path.dzialki")
-            // .data(warszawa_dzialki.features)
-            // .enter().append("path")
-            // .attr("d", path)
-            // .attr("class","dzialki")
-            // .attr("fill", "green") // Fill color for the plots
-            // .attr("stroke", "white") // Border color for the plots
-            // .attr("stroke-width", 0.5);
 
 
 
@@ -245,8 +199,7 @@
             const max_bilans = d3.max(spol, function (d) { return d.bilans_rsquare; })
             const min_bilans = d3.min(spol, function (d) { return d.bilans_rsquare; })
 
-            // console.log(max_bilans);
-            // console.log(min_bilans);
+
 
             var r_bilans = d3.scaleLinear()
                 .domain([0, max_bilans])
@@ -274,7 +227,7 @@
                 .attr("stroke-width", 1)
                 .attr("opacity", 0.7)
 
-                svg.append('rect')
+            svg.append('rect')
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('width', w)
@@ -284,11 +237,27 @@
                 .style('stroke-width', 2);
 
             dzielniceWarszawy.forEach(function (dzielnica) {
-                d3.select("div#dzielnimapki").append("div").attr("class", "cell").node().appendChild(
+
+                var featureDzielnica = warszawa_dzielnice.features.find(feature => feature.properties.name === dzielnica);
+                var spoldzielnieDzielnica = spol.filter(feature => feature.dzielnica === dzielnica);
+
+
+                let roadsWithinAdminUnit = warszawa_drogi.features.filter(function (road) {
+                    return turf.booleanWithin(road, featureDzielnica);
+                });
+
+                let dzielnica_drogi = {
+                    type: "FeatureCollection",
+                    features: roadsWithinAdminUnit
+                };
+
+
+                d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(
                     wykres_dzielnica(
-                    warszawa_dzielnice,
-                    dzielnica, spol,
-                    warszawa_drogi));
+                        featureDzielnica,
+                        dzielnica,
+                        spoldzielnieDzielnica,
+                        dzielnica_drogi));
             });
 
 
@@ -298,12 +267,13 @@
             let wyk = daj_mi_wykres(dane_w, 'Rys. Suma bilansów SM za rok 2022, wg dzielnic.');
 
 
+            //d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(
+            d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(wyk);
 
-            d3.select("div#chart2").node().appendChild(wyk);
             let dane_w2 = pogrupuj2(spol);
             let wyk2 = daj_mi_wykres(dane_w2, 'Rys. Liczba SM według dzielnic.');
 
-            d3.select("div#chart3").node().appendChild(wyk2);
+            d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(wyk2);
 
         });
 
