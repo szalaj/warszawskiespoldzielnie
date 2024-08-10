@@ -31,7 +31,7 @@
     var warszawa_drogi = d3.json("{{ url_for('static', filename='dzielnice/warszawa_drogi2ba.geojson') }}")
 
 
-    var spol = d3.json({{ url_for("common.spoldzielnie_dane") | tojson }})
+    var spoldzielnie = d3.json({{ url_for("common.spoldzielnie_dane") | tojson }})
     var sprawy = d3.json({{ url_for("common.sprawy_dane") | tojson }})
     var gw_svg = d3.svg("{{ url_for('static', filename='pics/gwiazdka2.svg') }}")
 
@@ -80,200 +80,215 @@
         return geojson;
     }
 
+    let dzielniceWarszawy = [];
+
     Promise.all([warszawa,
         wisla,
-        spol,
+        spoldzielnie,
         warszawa_dzielnice,
         warszawa_drogi])
-        .then(function ([warszawa,
-            wisla,
-            spol,
-            warszawa_dzielnice,
-            warszawa_drogi]) {
+        .then(function ([
+                warszawa,
+                wisla,
+                spoldzielnie,
+                warszawa_dzielnice,
+                warszawa_drogi]) {
+
+                spoldzielnie.sort(function (a, b) {
+                    return b.bilans - a.bilans;
+                });
+
+                var defs = svg.append('defs');
+                var gradient = defs.append('linearGradient')
+                    .attr('id', 'svgGradient')
+                    .attr('x1', '0%')
+                    .attr('x2', '100%')
+                    .attr('y1', '0%')
+                    .attr('y2', '100%');
+
+                gradient.append('stop')
+                    .attr('class', 'start')
+                    .attr('offset', '0%')
+                    .attr('stop-color', '#ca554a')
+                    .attr('stop-opacity', 0.0);
+
+                gradient.append('stop')
+                    .attr('class', 'end')
+                    .attr('offset', '100%')
+                    .attr('stop-color', '#cada14')
+                    .attr('stop-opacity', 0);
+
+                // dzielnice = ["Bemowo", "Białołęka", "Bielany", "Mokotów", "Ochota", "Praga-Południe", "Praga-Północ", "Rembertów", "Śródmieście", "Targówek", "Ursus", "Ursynów", "Wawer", "Wesoła", "Wilanów", "Włochy", "Wola", "Żoliborz"];
+
+                
+                warszawa_dzielnice.features.forEach(function (feature) {
+
+                    if (feature.properties.name != "Warszawa") {
+                        dzielniceWarszawy.push(feature.properties.name)
+                    }
 
 
-            // sort spol by bilans descending
-            spol.sort(function (a, b) {
-                return b.bilans - a.bilans;
-            });
-
-            // d3.select("#svgEmbed").node().appendChild(values[3].documentElement);
-
-            // warszawa.features.forEach(function (feature) {
-            //     feature.geometry.coordinates[0].reverse();
-            // });
-
-            // svg.selectAll("path.continent")
-            //     .data(warszawa.features)
-            //     .enter()
-            //     .append("path")
-            //     .attr("class", "continent")
-            //     .attr("d", path_proj);
-
-
-
-            var defs = svg.append('defs');
-            var gradient = defs.append('linearGradient')
-                .attr('id', 'svgGradient')
-                .attr('x1', '0%')
-                .attr('x2', '100%')
-                .attr('y1', '0%')
-                .attr('y2', '100%');
-
-            gradient.append('stop')
-                .attr('class', 'start')
-                .attr('offset', '0%')
-                .attr('stop-color', '#ca554a')
-                .attr('stop-opacity', 0.0);
-
-            gradient.append('stop')
-                .attr('class', 'end')
-                .attr('offset', '100%')
-                .attr('stop-color', '#cada14')
-                .attr('stop-opacity', 0);
-
-            // dzielnice = ["Bemowo", "Białołęka", "Bielany", "Mokotów", "Ochota", "Praga-Południe", "Praga-Północ", "Rembertów", "Śródmieście", "Targówek", "Ursus", "Ursynów", "Wawer", "Wesoła", "Wilanów", "Włochy", "Wola", "Żoliborz"];
-
-            let dzielniceWarszawy = [];
-            warszawa_dzielnice.features.forEach(function (feature) {
-
-                if (feature.properties.name != "Warszawa") {
-                    dzielniceWarszawy.push(feature.properties.name)
-                }
-
-
-                feature.geometry.coordinates.forEach(function (coords) {
-                    coords.forEach(function (coord) {
-                        coord.reverse();
+                    feature.geometry.coordinates.forEach(function (coords) {
+                        coords.forEach(function (coord) {
+                            coord.reverse();
+                        });
                     });
+
                 });
 
-            });
+                svg.selectAll("path.drogi")
+                    .data(warszawa_drogi.features)
+                    .enter()
+                    .append("path")
+                    .attr("class", "drogi")
+                    .attr("d", path_proj);
+
+                svg.selectAll("path.dzielnice")
+                    .data(warszawa_dzielnice.features)
+                    .enter()
+                    .append("path")
+                    .attr("class", "dzielnice")
+                    .attr("d", path_proj);
+
+                svg.selectAll("path.wisla")
+                    .data(wisla.features)
+                    .enter()
+                    .append("path")
+                    .attr("class", "wisla")
+                    .attr("d", path_proj);
 
 
 
-
-
-            svg.selectAll("path.drogi")
-                .data(warszawa_drogi.features)
-                .enter()
-                .append("path")
-                .attr("class", "drogi")
-                .attr("d", path_proj);
-
-
-
-
-            svg.selectAll("path.dzielnice")
-                .data(warszawa_dzielnice.features)
-                .enter()
-                .append("path")
-                .attr("class", "dzielnice")
-                .attr("d", path_proj);
-
-            svg.selectAll("path.wisla")
-                .data(wisla.features)
-                .enter()
-                .append("path")
-                .attr("class", "wisla")
-                .attr("d", path_proj);
+                let g_spol = svg.selectAll("g.spoldzielnia")
+                    .data(spoldzielnie)
+                    .enter()
+                    .append("g")
+                    .attr("class", "spoldzielnia")
+                    .attr("transform", function (d) {
+                        return "translate(" + projection([d.dlugosc_geo, d.szerokosc_geo]) + ")"
+                    })
 
 
 
-            let g_spol = svg.selectAll("g.spoldzielnia")
-                .data(spol)
-                .enter()
-                .append("g")
-                .attr("class", "spoldzielnia")
-                .attr("transform", function (d) {
-                    return "translate(" + projection([d.dlugosc_geo, d.szerokosc_geo]) + ")"
-                })
+                spoldzielnie = spoldzielnie.map(function (d) {
+                    d.bilans_rsquare = Math.sqrt(parseFloat(d.bilans)) // Replace "value" with the value you want to assign to the new attribute
+                    return d;
+                });
+
+                const max_bilans = d3.max(spoldzielnie, function (d) { return d.bilans_rsquare; })
+                const min_bilans = d3.min(spoldzielnie, function (d) { return d.bilans_rsquare; })
 
 
 
-            spol = spol.map(function (d) {
-                d.bilans_rsquare = Math.sqrt(parseFloat(d.bilans)) // Replace "value" with the value you want to assign to the new attribute
-                return d;
-            });
+                var r_bilans = d3.scaleLinear()
+                    .domain([0, max_bilans])
+                    .range([3, 16]);
 
-            const max_bilans = d3.max(spol, function (d) { return d.bilans_rsquare; })
-            const min_bilans = d3.min(spol, function (d) { return d.bilans_rsquare; })
+                g_spol
+                    .append("circle")
+                    .attr("class", "spoldzielnia")
+                    .attr("cx", 0)
+                    .attr("cy", 0)
+                    .attr("r", function (d) {
+                        let rr = 0
+                        // if (d.bilans_rsquare > 0) {
+                        //    rr = d.bilans_rsquare
+                        // } 
+                        // return r_bilans(rr)
+                        return 4;
+                    }
+                    )
+                    .attr("fill", function (d) {
+                        return 'rgb(147, 230, 255)'
+
+                    })
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 1)
+                    .attr("opacity", 0.7)
+
+                svg.append('rect')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('width', w)
+                    .attr('height', h)
+                    .style('fill', 'none')
+                    .style('stroke', '#d76050')
+                    .style('stroke-width', 2);
 
 
+                function resolveRandom(dzielnica) {
+     
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                        resolve(" slow "+ dzielnica);
+                        
+                        }, Math.floor(Math.random() * 3000));
+                    });
+}
 
-            var r_bilans = d3.scaleLinear()
-                .domain([0, max_bilans])
-                .range([3, 16]);
+                async function dodaj_dzielnie(dzielnica) {
 
-            g_spol
-                .append("circle")
-                .attr("class", "spoldzielnia")
-                .attr("cx", 0)
-                .attr("cy", 0)
-                .attr("r", function (d) {
-                    let rr = 0
-                    // if (d.bilans_rsquare > 0) {
-                    //    rr = d.bilans_rsquare
-                    // } 
-                    // return r_bilans(rr)
-                    return 4;
+                    var featureDzielnica =  await warszawa_dzielnice.features.find(feature => feature.properties.name === dzielnica);
+                    var spoldzielnieDzielnica =  spoldzielnie.filter(feature => feature.dzielnica === dzielnica);
+
+                    let roadsWithinAdminUnit = warszawa_drogi.features.filter(function (road) {
+                        return turf.booleanWithin(road, featureDzielnica);
+                    });
+
+                    let dzielnica_drogi = {
+                        type: "FeatureCollection",
+                        features: roadsWithinAdminUnit
+                    };
+
+                    let wazna = await resolveRandom(dzielnica);
+                
+
+                    d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(
+                        wykres_dzielnica(
+                            featureDzielnica,
+                            dzielnica,
+                            await spoldzielnieDzielnica,
+                            dzielnica_drogi));
+                    
+
                 }
-                )
-                .attr("fill", function (d) {
-                    return 'rgb(147, 230, 255)'
 
-                })
-                .attr("stroke", "black")
-                .attr("stroke-width", 1)
-                .attr("opacity", 0.7)
+                async function loadAllMaps(dzielnice_warszawy) {
 
-            svg.append('rect')
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr('width', w)
-                .attr('height', h)
-                .style('fill', 'none')
-                .style('stroke', '#d76050')
-                .style('stroke-width', 2);
+                    const loadPromises = dzielnice_warszawy.map(dzielnica => dodaj_dzielnie(dzielnica));
 
-            dzielniceWarszawy.forEach(function (dzielnica) {
-
-                var featureDzielnica = warszawa_dzielnice.features.find(feature => feature.properties.name === dzielnica);
-                var spoldzielnieDzielnica = spol.filter(feature => feature.dzielnica === dzielnica);
+                    return Promise.all(loadPromises);
+                }
 
 
-                let roadsWithinAdminUnit = warszawa_drogi.features.filter(function (road) {
-                    return turf.booleanWithin(road, featureDzielnica);
+                loadAllMaps(dzielniceWarszawy).then(() => {
+                    // console.log("All maps loaded");
+
+
+                    let dane_w = pogrupuj(spoldzielnie);
+                    let suma_wszystkich = d3.sum(spoldzielnie, function (d) { return d.bilans; });
+                    let wyk = daj_mi_wykres(dane_w, 'Rys. Suma bilansów SM za rok 2022, wg dzielnic.');
+
+
+                    //d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(
+                    d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(wyk);
+
+                    let dane_w2 = pogrupuj2(spoldzielnie);
+                    let wyk2 = daj_mi_wykres(dane_w2, 'Rys. Liczba SM według dzielnic.');
+
+                    d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(wyk2);
+
+
+
                 });
 
-                let dzielnica_drogi = {
-                    type: "FeatureCollection",
-                    features: roadsWithinAdminUnit
-                };
 
 
-                d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(
-                    wykres_dzielnica(
-                        featureDzielnica,
-                        dzielnica,
-                        spoldzielnieDzielnica,
-                        dzielnica_drogi));
-            });
+   
+                    
+       
 
 
-
-            let dane_w = pogrupuj(spol);
-            let suma_wszystkich = d3.sum(spol, function (d) { return d.bilans; });
-            let wyk = daj_mi_wykres(dane_w, 'Rys. Suma bilansów SM za rok 2022, wg dzielnic.');
-
-
-            //d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(
-            d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(wyk);
-
-            let dane_w2 = pogrupuj2(spol);
-            let wyk2 = daj_mi_wykres(dane_w2, 'Rys. Liczba SM według dzielnic.');
-
-            d3.select("div#wszystko").append("div").attr("class", "cell").node().appendChild(wyk2);
 
         });
 

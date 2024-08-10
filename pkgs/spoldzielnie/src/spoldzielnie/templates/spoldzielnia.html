@@ -30,16 +30,16 @@ var warszawa = d3.json("{{ url_for('static', filename='dzielnice/warszawa.geojso
     var warszawa_dzielnice = d3.json("{{ url_for('static', filename='dzielnice/warszawa-dzielnice.geojson') }}")
     var wisla = d3.json("{{ url_for('static', filename='dzielnice/wisla.geojson') }}")
 
-    // var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
+    // var spoldzielnie = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
 
 
-    var spol = d3.json({{ url_for("common.spoldzielnie_dane") | tojson }})
+    var spoldzielnie = d3.json({{ url_for("common.spoldzielnie_dane") | tojson }})
     var sprawy = d3.json({{ url_for("common.sprawy_dane") | tojson }})
     var gw_svg = d3.svg("{{ url_for('static', filename='pics/gwiazdka2.svg') }}")
 
     var formatMoney = d3.formatMoney = function (d) { return d3.format(",.2f")(d) + " zł"; }
 
-    Promise.all([warszawa, wisla, spol, gw_svg, sprawy, warszawa_dzielnice]).then(function(values){  
+    Promise.all([warszawa, wisla, spoldzielnie, gw_svg, sprawy, warszawa_dzielnice]).then(function(values){  
 
 
 
