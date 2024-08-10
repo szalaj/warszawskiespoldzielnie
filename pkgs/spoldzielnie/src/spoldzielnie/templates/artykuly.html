@@ -28,7 +28,7 @@
 <script type="module">
 
 
-    // var spol = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
+    // var spoldzielnie = d3.csv("{{ url_for('static', filename='warszawskie_spoldzielnie.csv') }}")
 
 
     var artykuly = d3.json({{ url_for("common.artykuly_dane") | tojson }})
