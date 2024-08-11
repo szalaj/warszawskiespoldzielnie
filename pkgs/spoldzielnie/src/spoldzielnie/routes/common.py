@@ -18,6 +18,8 @@ def favicon():
 
 @common.route('/', methods=['GET', 'POST'])
 def main():
+    logger.info(f"baza index : {db}")
+
     return render_template('index.html')
 
 
@@ -34,6 +36,7 @@ def artykuly():
 def artykuly_dane():
 
     logger.info(f"artykuly dane")
+    logger.info(f"baza danych : {db}")
 
     result = db.session.query(Sprawa, Spoldzielnia).join(
         Spoldzielnia, Spoldzielnia.krs == Sprawa.spoldzielnia, 

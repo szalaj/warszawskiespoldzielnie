@@ -2,10 +2,6 @@ import os
 from spoldzielnie import init_app
 from loguru import logger
 
-current_path = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.abspath(os.path.join(current_path, 'db'))
-
-
 #################################################
 # ustaw zmienne srodowskowe w terminalu przed uruchomieniem aplikacji
 # bazy danych sqlite i
