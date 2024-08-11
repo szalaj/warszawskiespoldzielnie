@@ -26,6 +26,9 @@ def init_app():
 
     db.init_app(app)
     logger.info(f"baza danych : {db}")
+    with app.app_context():
+        logger.info(f"baza danych context: {db.engine.url}")
+        
     migrate.init_app(app, db, directory=app.config['MIGRATIONS_DIR'])
 
     
