@@ -33,10 +33,14 @@ def artykuly():
 @common.route('/artykuly_dane', methods=['GET'])
 def artykuly_dane():
 
+    logger.info(f"artykuly dane")
+
     result = db.session.query(Sprawa, Spoldzielnia).join(
         Spoldzielnia, Spoldzielnia.krs == Sprawa.spoldzielnia, 
         isouter=True).all()
     
+    logger.info(f"artykuly dane result : {result}")
+
 
     S=[]
     for spr, s in result:
