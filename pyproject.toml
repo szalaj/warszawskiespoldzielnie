@@ -12,6 +12,9 @@ flask = "^3.0.2"
 loguru = "^0.7.2"
 spoldzielnie = {path = "pkgs/spoldzielnie", develop = true}
 gunicorn = "^22.0.0"
+google-cloud = "^0.34.0"
+google-auth = "^2.33.0"
+google-auth-oauthlib = "^1.2.1"
 
 [build-system]
 requires = ["poetry-core"]

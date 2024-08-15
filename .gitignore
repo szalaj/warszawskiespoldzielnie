@@ -8,3 +8,4 @@ node_modules/*
 instance/
 .~lock.*
 .vscode
+credentials.json
