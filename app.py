@@ -12,7 +12,8 @@ envs_to_set = [
     'APPDB_PATH',
     'LOG_PATH',
     'APP_FOLDER',
-    'FLASK_SECRET_KEY'
+    'FLASK_SECRET_KEY',
+    'CRED'
 ]
 # Check if APPDB_PATH is set
 for env in envs_to_set:

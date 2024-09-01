@@ -9,3 +9,5 @@ instance/
 .~lock.*
 .vscode
 credentials.json
+dat.db
+envs.sh
